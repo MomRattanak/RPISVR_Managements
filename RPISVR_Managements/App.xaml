@@ -11,6 +11,17 @@
                 <!-- Other merged dictionaries here -->
             </ResourceDictionary.MergedDictionaries>
             <!-- Other app resources here -->
+
+            <!--Syte for KH_Text_Body-->
+            <Style x:Name="Font_KH_Body" TargetType="TextBlock">
+                <Setter Property="FontFamily" Value="Khmer OS Battambang"/>
+                <Setter Property="FontSize" Value="12"/>
+            </Style>
+            <!--Stye for KH_AutoSuggestBox_TitleBar-->
+            <Style x:Name="Stye_KH_AutoSuggestBox_TitleBar" TargetType="AutoSuggestBox" BasedOn="{StaticResource DefaultAutoSuggestBoxStyle}">
+                <Setter Property="FontFamily" Value="Khmer OS Battambang"/>
+                <Setter Property="FontSize" Value="12"/>
+            </Style>
         </ResourceDictionary>
     </Application.Resources>
 </Application>
