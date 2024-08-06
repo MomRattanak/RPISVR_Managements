@@ -9,50 +9,7 @@
     xmlns:control="using:CommunityToolkit.WinUI.UI.Controls"
     mc:Ignorable="d">
 
-    <Grid>
-        <!--Set Row--> 
-        <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition/>
-        </Grid.RowDefinitions>
-        
-        <!--TitleBar-->
-        <Grid x:Name="AppTitleBar" Height="48">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition x:Name="LeftPaddingColumn" Width="0"/>
-                <ColumnDefinition x:Name="IconColumn" Width="Auto"/>
-                <ColumnDefinition x:Name="TitleColumn" Width="Auto"/>
-                <ColumnDefinition x:Name="LeftDragColumn" Width="*"/>
-                <ColumnDefinition x:Name="SearchColumn" Width="4*" MinWidth="220"/>
-                <ColumnDefinition x:Name="RightDragColumn" Width="*" MinWidth="48"/>
-                <ColumnDefinition x:Name="AccountColumn" Width="Auto"/>
-                <ColumnDefinition x:Name="RightPaddingColumn" Width="0"/>
-            </Grid.ColumnDefinitions>
-        
-            <!--Title Bar Items-->  
-            <Image x:Name="TitleBarIcon"
-                   Source="/Assets/RPISSVR_logo.png"
-                   Grid.Column="1"
-                   Width="32" Height="32"
-                   Margin="8,0,4,0"/>
-            <TextBlock x:Name="TitleBarTextBlock"
-                   Text="Main Page" 
-                   Style="{StaticResource Font_KH_Body}"
-                   Grid.Column="2"
-                   VerticalAlignment="Center">
-            </TextBlock>
-            <AutoSuggestBox x:Name="TitleBarSearchBox" 
-                    Grid.Column="4" 
-                    QueryIcon="Find"
-                    Style="{StaticResource Stye_KH_AutoSuggestBox_TitleBar}"
-                    PlaceholderText="ស្វែងរកតាមរយៈម៉ីនុយ"
-                    VerticalAlignment="Center"
-                    MaxWidth="600"/>
-            <PersonPicture x:Name="PersonAccountPic" 
-                    Grid.Column="6" 
-                    Height="32" Margin="0,0,16,0"/>
-
-
-        </Grid>
-    </Grid>
+    <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
+        <Button x:Name="myButton" Click="myButton_Click">Click Me</Button>
+    </StackPanel>
 </Window>
