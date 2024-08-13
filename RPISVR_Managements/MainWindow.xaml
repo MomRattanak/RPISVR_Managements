@@ -53,14 +53,14 @@
                 Height="32" Margin="0,0,16,0"/>
         </Grid>
 
-        <!--Create NavigationView-->
+        <!--NavigationView-->
         <NavigationView x:Name="Main_Navigation" Grid.Row="1"          
                 IsBackButtonVisible="Collapsed"
                 FontFamily="Khmer OS Battambang"
                 IsSettingsVisible="False" Loaded="MainNV_Load" SelectionChanged="Main_NV_Items_SelectionChanged" OpenPaneLength="303">
             
             <NavigationView.MenuItems>
-                <NavigationViewItem Content="ទំព័រដើម" Icon="Home" Style="{StaticResource KH_Font_NavigationView}" Tag="SamplePage1">
+                <NavigationViewItem x:Name="HomePage" Content="ទំព័រដើម" Icon="Home" Style="{StaticResource KH_Font_NavigationView}" Tag="SamplePage1">
                     <!--Tooltip-Home-->
                     <ToolTipService.ToolTip>
                         <TextBlock Text="ទំព័រដើម" Style="{StaticResource KH_Tooltip}"/>
@@ -79,12 +79,12 @@
                     <NavigationViewItem.MenuItems>
                         
                         <!--Student_Information-->
-                        <NavigationViewItem Content="ទិន្នន័យសិស្សនិស្សិត" Icon="People" Style="{StaticResource KH_Font_NavigationView}">
+                        <NavigationViewItem x:Name="Student_Information" Content="ទិន្នន័យសិស្សនិស្សិត" Icon="People" Style="{StaticResource KH_Font_NavigationView}">
                             <ToolTipService.ToolTip>
                                 <TextBlock Text="ទិន្នន័យសិស្សនិស្សិត (បញ្ចូល,ពិនិត្យ,របាយការណ៍)" Style="{StaticResource KH_Tooltip}"/>
                             </ToolTipService.ToolTip>
                             <NavigationViewItem.MenuItems>
-                                <NavigationViewItem Content="បញ្ចូលទិន្នន័យសិស្សនិស្សិត" Style="{StaticResource KH_Font_NavigationView}" Icon="Add"  Tag="SamplePage4">
+                                <NavigationViewItem x:Name="Insert_Student_Info" Content="បញ្ចូលទិន្នន័យសិស្សនិស្សិត" Style="{StaticResource KH_Font_NavigationView}" Icon="Add"  Tag="SamplePage4">
                                     <ToolTipService.ToolTip>
                                         <TextBlock Text="បញ្ចូលទិន្នន័យសិស្សនិស្សិត" Style="{StaticResource KH_Tooltip}"/>
                                     </ToolTipService.ToolTip>
@@ -478,6 +478,28 @@
                     </ToolTipService.ToolTip>
                 </NavigationViewItem>
             </NavigationView.FooterMenuItems>
+            
+            <!--TabView-->
+
+            <TabView x:Name="TabView" FontFamily="Khmer OS Battambang" IsAddTabButtonVisible="False" CanDragTabs="True" TabItemsChanged="TabView_TabItemsChanged" TabCloseRequested="TabView_TabCloseRequested">
+                <TabViewItem Header="ទំព័រដើម"  TabIndex="0" IsClosable="False" Style="{StaticResource Fonts_Header_TabView}">
+                    <TabViewItem.IconSource>
+                        <SymbolIconSource Symbol="Home" />
+                    </TabViewItem.IconSource>
+                    <StackPanel Margin="10" Orientation="Vertical" VerticalAlignment="Top">
+                        <!--BorderBrush="Aqua" BorderThickness="2"-->
+                        <VariableSizedWrapGrid Orientation="Vertical" MaximumRowsOrColumns="3" ItemHeight="44" ItemWidth="44">
+                            <Rectangle Fill="Red"/>
+                            <Rectangle Fill="Blue" Height="80" VariableSizedWrapGrid.RowSpan="2"/>
+                            <Rectangle Fill="Green" Width="80" VariableSizedWrapGrid.ColumnSpan="2"/>
+                            <Rectangle Fill="Yellow" Height="80" Width="80" VariableSizedWrapGrid.RowSpan="2" VariableSizedWrapGrid.ColumnSpan="2"/>
+                        </VariableSizedWrapGrid>
+                    </StackPanel>
+
+                </TabViewItem>
+            </TabView>
         </NavigationView>
+        <!--Content Frame-->
+        <Frame x:Name="contentFrame"/>
     </Grid>
 </Window>
