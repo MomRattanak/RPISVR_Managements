@@ -12,6 +12,12 @@
             </ResourceDictionary.MergedDictionaries>
             <!-- Other app resources here -->
 
+            <!--Syte for KH_Text_Title-->
+            <Style x:Name="Font_KH_Title" TargetType="TextBlock">
+                <Setter Property="FontFamily" Value="Khmer OS Battambang"/>
+                <Setter Property="FontSize" Value="13"/>
+            </Style>
+            
             <!--Syte for KH_Text_Body-->
             <Style x:Name="Font_KH_Body" TargetType="TextBlock">
                 <Setter Property="FontFamily" Value="Khmer OS Battambang"/>
@@ -33,6 +39,17 @@
                 <Setter Property="FontFamily" Value="Khmer OS Battambang"/>
                 <Setter Property="FontSize" Value="11"/>
                 <Setter Property="Foreground" Value="Green"/>
+            </Style>
+            
+            <!--Style Font KH_Header_TabView-->
+            <Style x:Name="Fonts_Header_TabView" TargetType="TabViewItem">
+                <Setter Property="HeaderTemplate">
+                    <Setter.Value>
+                        <DataTemplate>
+                            <TextBlock Text="{Binding}" FontFamily="Khmer OS Battambang" FontSize="12"/>
+                        </DataTemplate>
+                    </Setter.Value>
+                </Setter>
             </Style>
         </ResourceDictionary>
     </Application.Resources>

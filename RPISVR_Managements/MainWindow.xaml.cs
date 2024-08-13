@@ -7,12 +7,14 @@ using Microsoft.UI.Xaml.Data;
 using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Navigation;
+using RPISVR_Managements.Student_Informations.Insert_Student_Informations;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Runtime.InteropServices.WindowsRuntime;
+using System.Security.AccessControl;
 using Windows.ApplicationModel;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
@@ -120,12 +122,53 @@ namespace RPISVR_Managements
 
         private void MainNV_Load(object sender, RoutedEventArgs e)
         {
+            var tabViewItem = new TabViewItem();
+            tabViewItem.Header = "បញ្ចូលទិន្នន័យនិស្សិត";
+            tabViewItem.TabIndex = 1;
+            tabViewItem.IconSource = new SymbolIconSource { Symbol = Symbol.Add };
+            var frame = new Frame();
+            frame.Navigate(typeof(Insert_Student_Info));
+            tabViewItem.Content = frame;
 
+            TabView.TabItems.Add(tabViewItem);
+            TabView.SelectedIndex = 1;
         }
 
         private void Main_NV_Items_SelectionChanged(NavigationView sender, NavigationViewSelectionChangedEventArgs args)
         {
+            if(HomePage.IsSelected)
+            {
+                // Check if the tab is already open
+                foreach (TabViewItem tab in TabView.TabItems)
+                {
+                    if (tab.Header.ToString() == "ទំព័រដើម")
+                    {
+                        // Select the existing tab
+                        TabView.SelectedItem = tab;
+                        return;
+                    }
+                }
+                //// If the tab is not open, create a new one
+                //var newTab = new muxc.TabViewItem
+                //{
+                //    Header = header,
+                //    Content = new Frame { Content = Activator.CreateInstance(pageType) }
+                //};
+
+                //MyTabView.TabItems.Add(newTab);
+                //MyTabView.SelectedItem = newTab;
+            }
+        }
+
+        private void TabView_TabItemsChanged(TabView sender, IVectorChangedEventArgs args)
+        {
 
         }
+
+        private void TabView_TabCloseRequested(TabView sender, TabViewTabCloseRequestedEventArgs args)
+        {
+            sender.TabItems.Remove(args.Tab);
+        }
     }
+
 }
