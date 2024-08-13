@@ -15,12 +15,24 @@
             <!--Syte for KH_Text_Body-->
             <Style x:Name="Font_KH_Body" TargetType="TextBlock">
                 <Setter Property="FontFamily" Value="Khmer OS Battambang"/>
-                <Setter Property="FontSize" Value="12"/>
+                <Setter Property="FontSize" Value="13"/>
             </Style>
             <!--Stye for KH_AutoSuggestBox_TitleBar-->
             <Style x:Name="Stye_KH_AutoSuggestBox_TitleBar" TargetType="AutoSuggestBox" BasedOn="{StaticResource DefaultAutoSuggestBoxStyle}">
                 <Setter Property="FontFamily" Value="Khmer OS Battambang"/>
-                <Setter Property="FontSize" Value="12"/>
+                <Setter Property="FontSize" Value="13"/>
+            </Style>
+            <!--Stye for KH_Font_NavigationView-->
+            <Style x:Name="KH_Font_NavigationView" TargetType="NavigationViewItem">
+                <Setter Property="FontFamily" Value="Khmer OS Battambang"/>
+                <Setter Property="FontSize" Value="13"/>
+            </Style>
+            
+            <!--Stye for Tooltip_KH-->
+            <Style x:Name="KH_Tooltip" TargetType="TextBlock">
+                <Setter Property="FontFamily" Value="Khmer OS Battambang"/>
+                <Setter Property="FontSize" Value="11"/>
+                <Setter Property="Foreground" Value="Green"/>
             </Style>
         </ResourceDictionary>
     </Application.Resources>

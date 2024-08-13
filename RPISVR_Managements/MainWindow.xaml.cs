@@ -118,6 +118,14 @@ namespace RPISVR_Managements
             }
         }
 
+        private void MainNV_Load(object sender, RoutedEventArgs e)
+        {
 
+        }
+
+        private void Main_NV_Items_SelectionChanged(NavigationView sender, NavigationViewSelectionChangedEventArgs args)
+        {
+
+        }
     }
 }
