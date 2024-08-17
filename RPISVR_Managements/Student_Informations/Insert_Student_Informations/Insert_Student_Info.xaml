@@ -20,6 +20,7 @@
 
         <StackPanel x:Name="Insert_Stu_Info_Header" Grid.Row="0" Margin="5">
             <TextBlock Text="បញ្ចូលទិន្នន័យសិស្សនិស្សិត" Style="{StaticResource Font_KH_Title}"/>
+            
         </StackPanel>
     </Grid>
 </Page>

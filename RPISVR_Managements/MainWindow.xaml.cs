@@ -1,4 +1,5 @@
-﻿using Microsoft.UI.Input;
+﻿using Microsoft.UI;
+using Microsoft.UI.Input;
 using Microsoft.UI.Windowing;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
@@ -7,6 +8,7 @@ using Microsoft.UI.Xaml.Data;
 using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Navigation;
+using RPISVR_Managements.Setting.System_Setting;
 using RPISVR_Managements.Student_Informations.Insert_Student_Informations;
 using System;
 using System.Collections.Generic;
@@ -18,6 +20,8 @@ using System.Security.AccessControl;
 using Windows.ApplicationModel;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
+using Windows.UI.ViewManagement;
+
 
 
 namespace RPISVR_Managements
@@ -27,16 +31,13 @@ namespace RPISVR_Managements
     {
         private AppWindow m_AppWindow;
 
-        //Dark Mode
-        [DllImport("UXTheme.dll", SetLastError = true, EntryPoint = "#138")]
-        public static extern bool ShouldSystemUseDarkMode();
-
         public MainWindow()
         {
             this.InitializeComponent();
-            
+
+
             m_AppWindow = this.AppWindow;
-            Activated += MainWindow_Activated;
+            //Activated += MainWindow_Activated;
             AppTitleBar.SizeChanged += AppTitleBar_SizeChanged;
             AppTitleBar.Loaded += AppTitleBar_Loaded;
 
@@ -47,9 +48,20 @@ namespace RPISVR_Managements
             }
             //Set TitleBar Name as Project
             //TitleBarTextBlock.Text = AppInfo.Current.DisplayInfo.DisplayName;
-
-            TitleBarTextBlock.Text = "ប្រព័ន្ធគ្រប់គ្រងទិន្នន័យសិស្ស និស្សិត";
         }
+        // Method to change the theme for the entire MainWindow
+        public void SetTheme(ElementTheme theme)
+        {
+            Application_Controls.RequestedTheme = theme;
+            Main_Navigation.RequestedTheme = theme;
+            AppTitleBar.RequestedTheme = theme;
+
+
+
+        }
+
+        
+
         private void AppTitleBar_Loaded(object sender, RoutedEventArgs e)
         {
             if (ExtendsContentIntoTitleBar == true)
@@ -105,33 +117,41 @@ namespace RPISVR_Managements
                 _Height: (int)Math.Round(bounds.Height * scale)
             );
         }
+        
 
-        private void MainWindow_Activated(object sender, WindowActivatedEventArgs args)
-        {
-            if (args.WindowActivationState == WindowActivationState.Deactivated)
-            {
-                TitleBarTextBlock.Foreground =
-                    (SolidColorBrush)App.Current.Resources["WindowCaptionForegroundDisabled"];
-            }
-            else
-            {
-                TitleBarTextBlock.Foreground =
-                    (SolidColorBrush)App.Current.Resources["WindowCaptionForeground"];
-            }
-        }
+        //Foreground Title
+        //private void MainWindow_Activated(object sender, WindowActivatedEventArgs args)
+        //{
+        //    if (args.WindowActivationState == WindowActivationState.Deactivated)
+        //    {
+        //        TitleBarTextBlock.Foreground =
+        //            (SolidColorBrush)App.Current.Resources["WindowCaptionForegroundDisabled"];
+        //        TitleBarIcon.Visibility = Visibility.Collapsed;
+                
+        //    }
+        //    else
+        //    {
+        //        TitleBarTextBlock.Foreground =
+        //            (SolidColorBrush)App.Current.Resources["WindowCaptionForeground"];
+        //        TitleBarIcon.Visibility = Visibility.Visible;
+        //    }
+        //}
+
+        
+        
 
         private void MainNV_Load(object sender, RoutedEventArgs e)
         {
-            var tabViewItem = new TabViewItem();
-            tabViewItem.Header = "បញ្ចូលទិន្នន័យនិស្សិត";
-            tabViewItem.TabIndex = 1;
-            tabViewItem.IconSource = new SymbolIconSource { Symbol = Symbol.Add };
-            var frame = new Frame();
-            frame.Navigate(typeof(Insert_Student_Info));
-            tabViewItem.Content = frame;
+            //var tabViewItem = new TabViewItem();
+            //tabViewItem.Header = "បញ្ចូលទិន្នន័យសិស្សនិស្សិត";
+            //tabViewItem.TabIndex = 1;
+            //tabViewItem.IconSource = new SymbolIconSource { Symbol = Symbol.Add };
+            //var frame = new Frame();
+            //frame.Navigate(typeof(Insert_Student_Info));
+            //tabViewItem.Content = frame;
 
-            TabView.TabItems.Add(tabViewItem);
-            TabView.SelectedIndex = 1;
+            //TabView.TabItems.Add(tabViewItem);
+            //TabView.SelectedIndex = 1;
         }
 
         private void Main_NV_Items_SelectionChanged(NavigationView sender, NavigationViewSelectionChangedEventArgs args)
@@ -158,6 +178,59 @@ namespace RPISVR_Managements
                 //MyTabView.TabItems.Add(newTab);
                 //MyTabView.SelectedItem = newTab;
             }
+            else if(Insert_Student_Info.IsSelected)
+            {
+                // Check if the tab is already open
+                foreach (TabViewItem tab in TabView.TabItems)
+                {
+                    if (tab.Content.ToString() != "បញ្ចូលទិន្នន័យសិស្សនិស្សិត")
+                    {
+                        
+                        var tabViewItem = new TabViewItem();
+                        tabViewItem.Header = "បញ្ចូលទិន្នន័យសិស្សនិស្សិត";
+                        var frame = new Frame();
+                        frame.Navigate(typeof(Insert_Student_Info));
+                        tabViewItem.Content = frame;
+
+                        TabView.TabItems.Add(tabViewItem);
+                        TabView.SelectedIndex = 0;
+                        return;
+
+                    }
+                    else if (tab.Content.ToString() == "បញ្ចូលទិន្នន័យសិស្សនិស្សិត")
+                    {
+                        // Select the existing tab
+                        TabView.SelectedItem = tab;
+                        return;
+
+                    }
+                }
+            }
+            else if(Setting.IsSelected)
+            {
+                // Check if the tab is already open
+                foreach (TabViewItem tab in TabView.TabItems)
+                {
+                    if (tab.Header.ToString() == "ការកំណត់")
+                    {
+                        // Select the existing tab
+                        TabView.SelectedItem = tab;
+                        return;
+                    }
+                    else
+                    {
+                        var tabViewItem = new TabViewItem();
+                        tabViewItem.Header = "ការកំណត់";
+                        var frame = new Frame();
+                        frame.Navigate(typeof(System_Settings));
+                        tabViewItem.Content = frame;
+
+                        TabView.TabItems.Add(tabViewItem);
+                        TabView.SelectedIndex = 2;
+                        return;
+                    }
+                }
+            }
         }
 
         private void TabView_TabItemsChanged(TabView sender, IVectorChangedEventArgs args)
@@ -169,6 +242,8 @@ namespace RPISVR_Managements
         {
             sender.TabItems.Remove(args.Tab);
         }
+
+       
     }
 
 }

@@ -27,5 +27,7 @@ namespace RPISVR_Managements.Student_Informations.Insert_Student_Informations
         {
             this.InitializeComponent();
         }
+
+        
     }
 }
