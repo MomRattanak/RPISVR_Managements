@@ -5,13 +5,18 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:local="using:RPISVR_Managements">
     <Application.Resources>
+        
+        
         <ResourceDictionary>
+            
+            
             <ResourceDictionary.MergedDictionaries>
                 <XamlControlsResources xmlns="using:Microsoft.UI.Xaml.Controls" />
                 <!-- Other merged dictionaries here -->
             </ResourceDictionary.MergedDictionaries>
             <!-- Other app resources here -->
 
+            
             <!--Syte for KH_Text_Title-->
             <Style x:Name="Font_KH_Title" TargetType="TextBlock">
                 <Setter Property="FontFamily" Value="Khmer OS Battambang"/>

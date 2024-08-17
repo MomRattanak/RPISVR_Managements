@@ -9,7 +9,7 @@
     xmlns:control="using:CommunityToolkit.WinUI.UI.Controls"
     mc:Ignorable="d">
 
-    <Grid>
+    <Grid x:Name="Application_Controls">
         <!--Set Row-->
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
@@ -17,7 +17,7 @@
         </Grid.RowDefinitions>
 
         <!--TitleBar-->
-        <Grid x:Name="AppTitleBar" Height="48">
+        <Grid x:Name="AppTitleBar" Height="48" Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition x:Name="LeftPaddingColumn" Width="0"/>
                 <ColumnDefinition x:Name="IconColumn" Width="Auto"/>
@@ -36,8 +36,8 @@
                Width="32" Height="32"
                Margin="8,0,4,0"/>
             <TextBlock x:Name="TitleBarTextBlock"
-               Text="Main Page" 
-               Style="{StaticResource Font_KH_Body}"
+               Text="ប្រព័ន្ធគ្រប់គ្រងទិន្នន័យសិស្សនិស្សិត" 
+               Style="{StaticResource Font_KH_Body}"             
                Grid.Column="2"
                VerticalAlignment="Center">
             </TextBlock>
@@ -51,12 +51,14 @@
             <PersonPicture x:Name="PersonAccountPic" 
                 Grid.Column="6" 
                 Height="32" Margin="0,0,16,0"/>
+            
         </Grid>
 
         <!--NavigationView-->
-        <NavigationView x:Name="Main_Navigation" Grid.Row="1"          
+        <NavigationView x:Name="Main_Navigation"  Grid.Row="1"          
                 IsBackButtonVisible="Collapsed"
                 FontFamily="Khmer OS Battambang"
+                Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
                 IsSettingsVisible="False" Loaded="MainNV_Load" SelectionChanged="Main_NV_Items_SelectionChanged" OpenPaneLength="303">
             
             <NavigationView.MenuItems>
@@ -84,7 +86,7 @@
                                 <TextBlock Text="ទិន្នន័យសិស្សនិស្សិត (បញ្ចូល,ពិនិត្យ,របាយការណ៍)" Style="{StaticResource KH_Tooltip}"/>
                             </ToolTipService.ToolTip>
                             <NavigationViewItem.MenuItems>
-                                <NavigationViewItem x:Name="Insert_Student_Info" Content="បញ្ចូលទិន្នន័យសិស្សនិស្សិត" Style="{StaticResource KH_Font_NavigationView}" Icon="Add"  Tag="SamplePage4">
+                                <NavigationViewItem x:Name="Insert_Student_Info" Content="បញ្ចូលទិន្នន័យសិស្សនិស្សិត" Style="{StaticResource KH_Font_NavigationView}" Icon="Add"  Tag="Insert_Student_Info">
                                     <ToolTipService.ToolTip>
                                         <TextBlock Text="បញ្ចូលទិន្នន័យសិស្សនិស្សិត" Style="{StaticResource KH_Tooltip}"/>
                                     </ToolTipService.ToolTip>
@@ -466,12 +468,12 @@
             
             <!--FootMenu in Buttom-->
             <NavigationView.FooterMenuItems>
-                <NavigationViewItem Content="ការកំណត់" Style="{StaticResource KH_Font_NavigationView}" Icon="Setting" Tag="">
+                <NavigationViewItem x:Name="Setting" Content="ការកំណត់" Style="{StaticResource KH_Font_NavigationView}" Icon="Setting" Tag="System_Settings">
                     <ToolTipService.ToolTip>
                         <TextBlock Text="ការកំណត់" Style="{StaticResource KH_Tooltip}"/>
                     </ToolTipService.ToolTip>
                 </NavigationViewItem>
-
+              
                 <NavigationViewItem Content="ជំនួយ" Style="{StaticResource KH_Font_NavigationView}" Icon="Help" Tag="">
                     <ToolTipService.ToolTip>
                         <TextBlock Text="ជំនួយ" Style="{StaticResource KH_Tooltip}"/>
@@ -481,7 +483,8 @@
             
             <!--TabView-->
 
-            <TabView x:Name="TabView" FontFamily="Khmer OS Battambang" IsAddTabButtonVisible="False" CanDragTabs="True" TabItemsChanged="TabView_TabItemsChanged" TabCloseRequested="TabView_TabCloseRequested">
+            
+            <TabView x:Name="TabView" FontFamily="Khmer OS Battambang" IsAddTabButtonVisible="False" CanDragTabs="True" Background="{ThemeResource CardBackgroundFillColorDefault}" TabItemsChanged="TabView_TabItemsChanged" TabCloseRequested="TabView_TabCloseRequested">
                 <TabViewItem Header="ទំព័រដើម"  TabIndex="0" IsClosable="False" Style="{StaticResource Fonts_Header_TabView}">
                     <TabViewItem.IconSource>
                         <SymbolIconSource Symbol="Home" />

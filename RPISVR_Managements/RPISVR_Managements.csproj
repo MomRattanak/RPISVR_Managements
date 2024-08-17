@@ -13,6 +13,7 @@
     <EnableMsixTooling>true</EnableMsixTooling>
   </PropertyGroup>
   <ItemGroup>
+    <None Remove="Setting\System_Setting\System_Settings.xaml" />
     <None Remove="Student_Informations\Insert_Student_Informations\Insert_Student_Info.xaml" />
   </ItemGroup>
 
@@ -48,6 +49,11 @@
     <Folder Include="HomePage\" />
     <Folder Include="Student_Informations\Check_Student_Informations\" />
     <Folder Include="Student_Informations\Report_Student_Informations\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Page Update="Setting\System_Setting\System_Settings.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
   </ItemGroup>
   <ItemGroup>
     <Page Update="Student_Informations\Insert_Student_Informations\Insert_Student_Info.xaml">
