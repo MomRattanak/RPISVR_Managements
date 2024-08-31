@@ -51,10 +51,31 @@
                 <Setter Property="HeaderTemplate">
                     <Setter.Value>
                         <DataTemplate>
-                            <TextBlock Text="{Binding}" FontFamily="Khmer OS Battambang" FontSize="12"/>
+                            <TextBlock Text="{Binding}" 
+                                       FontFamily="Khmer OS Battambang" 
+                                       FontSize="12">
+                                       
+                                <!--ToolTip Header Tabview Stye-->
+                                
+                                    <ToolTipService.ToolTip>
+                                        <ToolTip>
+                                            <TextBlock Text="{Binding}" FontFamily="Khmer OS Battambang" FontSize="11"/>
+                                         </ToolTip>  
+                                    </ToolTipService.ToolTip>       
+                                
+                            </TextBlock>
                         </DataTemplate>
                     </Setter.Value>
                 </Setter>
+            </Style>
+
+            <Style x:Name="TabView_ToolTip_KH" TargetType="TabView">
+                <!--ToolTip Header Tabview Stye-->  
+                    <ToolTipService.ToolTip>
+                        <ToolTip>
+                            <TextBlock Text="{Binding}" FontFamily="Khmer OS Battambang" FontSize="11"/>
+                         </ToolTip>  
+                    </ToolTipService.ToolTip>         
             </Style>
         </ResourceDictionary>
     </Application.Resources>
