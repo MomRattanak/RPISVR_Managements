@@ -82,8 +82,22 @@ namespace RPISVR_Managements
             {
                 m_AppWindow.TitleBar.PreferredHeightOption = TitleBarHeightOption.Tall;
             }
-            //Set TitleBar Name as Project
-            //TitleBarTextBlock.Text = AppInfo.Current.DisplayInfo.DisplayName;
+
+            //Call Tab Close Event
+            TabView.TabCloseRequested += TabView_TabClosing;
+        }
+        private void TabView_TabClosing(TabView sender, TabViewTabCloseRequestedEventArgs args)
+        {
+            var tabViewItem = args.Tab as TabViewItem;
+            if (tabViewItem != null && tabViewItem.TabIndex == 1)
+            {
+                // Prevent closing by not removing the tab
+            }
+            else
+            {
+                // Close the tab by removing it from the TabItems collection
+                TabView.TabItems.Remove(tabViewItem);
+            }
         }
         // Method to change the theme for the entire MainWindow
         public void SetTheme(ElementTheme theme)
@@ -543,7 +557,8 @@ namespace RPISVR_Managements
                     // If it exists, select the tab and return
                     TabView.SelectedItem = tab;
                     return;
-                }
+                }              
+                
             }
 
             // If no duplicate tab is found, create a new one
@@ -571,7 +586,35 @@ namespace RPISVR_Managements
         {
             sender.TabItems.Remove(args.Tab);
         }
-        
+
+        private void CloseAllTabs_Click(object sender, RoutedEventArgs e)
+        {
+            var tabsToClose = TabView.TabItems.ToList();
+            foreach (var tab in tabsToClose)
+            {
+                if (tab is TabViewItem tabViewItem && tabViewItem.TabIndex != 1) // Skip the tab with TabIndex 1
+                {
+                    TabView.TabItems.Remove(tabViewItem);
+                }
+            }
+        }
+
+        private void TabView_Load(object sender, RoutedEventArgs e)
+        {
+            var tabViewItem = new TabViewItem();
+            tabViewItem.Header = "ទំព័រដើម";
+            tabViewItem.TabIndex = 1;
+            tabViewItem.IconSource = new SymbolIconSource { Symbol = Symbol.Home };
+            tabViewItem.IsClosable = false; // Disable the close button
+            var frame = new Frame();
+            frame.Navigate(typeof(HomePage));
+            tabViewItem.Content = frame;
+
+            TabView.TabItems.Add(tabViewItem);
+            
+            TabView.SelectedIndex = 1;
+        }
+
 
     }
 

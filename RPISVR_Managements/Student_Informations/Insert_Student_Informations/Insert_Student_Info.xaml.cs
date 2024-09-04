@@ -12,6 +12,7 @@ using Microsoft.UI.Xaml.Data;
 using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Navigation;
+using System.Diagnostics;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
@@ -28,6 +29,11 @@ namespace RPISVR_Managements.Student_Informations.Insert_Student_Informations
             this.InitializeComponent();
         }
 
-        
+        private void ISI_Click_Add_Student_Info(object sender, RoutedEventArgs e)
+        {
+            Console.WriteLine("Hi");
+            Debug.WriteLine("Click Add Student");
+
+        }
     }
 }

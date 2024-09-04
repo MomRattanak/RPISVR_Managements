@@ -546,8 +546,17 @@
             <!--TabView-->
 
             
-            <TabView x:Name="TabView" FontFamily="Khmer OS Battambang" IsAddTabButtonVisible="False" CanDragTabs="True" Background="{ThemeResource CardBackgroundFillColorDefault}" TabItemsChanged="TabView_TabItemsChanged" TabCloseRequested="TabView_TabCloseRequested" Style="{StaticResource TabView_ToolTip_KH}">
-               
+            <TabView x:Name="TabView" FontFamily="Khmer OS Battambang" IsAddTabButtonVisible="False" CanDragTabs="True" Background="{ThemeResource CardBackgroundFillColorDefault}" TabItemsChanged="TabView_TabItemsChanged" TabCloseRequested="TabView_TabCloseRequested" Loaded="TabView_Load" Style="{StaticResource TabView_ToolTip_KH}">
+                <TabView.TabStripFooter>
+                    <Button  Click="CloseAllTabs_Click">
+                        <StackPanel Orientation="Horizontal">
+                            <Image Source="/Assets/Student_Info_Icon/icons8-close-tab-48.png" Width="15" Height="15"/>
+                        </StackPanel>
+                        <ToolTipService.ToolTip>
+                            <TextBlock Text="បិទផ្ទាំងទាំងអស់" Style="{StaticResource KH_Tooltip}"/>
+                        </ToolTipService.ToolTip>
+                    </Button>
+                </TabView.TabStripFooter>
             </TabView>
         </NavigationView>
         <!--Content Frame-->
