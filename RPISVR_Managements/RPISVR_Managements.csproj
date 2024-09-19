@@ -43,6 +43,8 @@
     <None Remove="Request_Attendance\Request_Attendance_Student\Request_Attendance_Student_Info.xaml" />
     <None Remove="Request_Attendance\Request_Attendance_Teacher\Check_Request_Attendance_Info.xaml" />
     <None Remove="Request_Attendance\Request_Attendance_Teacher\Request_Attendance_Teacher_Info.xaml" />
+    <None Remove="Setting\System_Setting\Setting_In_Database.xaml" />
+    <None Remove="Setting\System_Setting\Setting_In_System.xaml" />
     <None Remove="Setting\System_Setting\System_Settings.xaml" />
     <None Remove="Student_Informations\Check_Student_Informations\Check_Student_Info.xaml" />
     <None Remove="Student_Informations\Insert_Student_Informations\Insert_Student_Info.xaml" />
@@ -68,6 +70,7 @@
   <ItemGroup>
     <PackageReference Include="Microsoft.Windows.SDK.BuildTools" Version="10.0.26100.1" />
     <PackageReference Include="Microsoft.WindowsAppSDK" Version="1.5.240802000" />
+    <PackageReference Include="MySql.Data" Version="9.0.0" />
     <PackageReference Include="System.Net.Http" Version="4.3.4" />
     <PackageReference Include="System.Text.RegularExpressions" Version="4.3.1" />
     <Manifest Include="$(ApplicationManifest)" />
@@ -83,6 +86,16 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Assets\Student_Info_Icon\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Page Update="Setting\System_Setting\Setting_In_Database.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+  </ItemGroup>
+  <ItemGroup>
+    <Page Update="Setting\System_Setting\Setting_In_System.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
   </ItemGroup>
   <ItemGroup>
     <Page Update="System_Helps\System_Helps_Info.xaml">

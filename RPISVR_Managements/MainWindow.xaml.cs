@@ -55,6 +55,8 @@ using RPISVR_Managements.List_and_Reports.Monthly_Report;
 using RPISVR_Managements.List_and_Reports.Semi_Annual_Report;
 using RPISVR_Managements.List_and_Reports.Yearly_Report;
 using RPISVR_Managements.System_Helps;
+using MySql.Data.MySqlClient;
+using RPISVR_Managements.ViewModel;
 
 
 
@@ -68,7 +70,7 @@ namespace RPISVR_Managements
         public MainWindow()
         {
             this.InitializeComponent();
-
+           
 
             m_AppWindow = this.AppWindow;
             m_AppWindow.Changed += AppWindow_Changed;
@@ -85,6 +87,8 @@ namespace RPISVR_Managements
 
             //Call Tab Close Event
             TabView.TabCloseRequested += TabView_TabClosing;
+
+            
         }
         private void TabView_TabClosing(TabView sender, TabViewTabCloseRequestedEventArgs args)
         {
@@ -615,7 +619,10 @@ namespace RPISVR_Managements
             TabView.SelectedIndex = 1;
         }
 
+        private void BackButton_Click(object sender, RoutedEventArgs e)
+        {
 
+        }
     }
 
 }
