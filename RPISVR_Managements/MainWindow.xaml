@@ -55,9 +55,8 @@
 
         <!--NavigationView-->
         <NavigationView x:Name="Main_Navigation"  Grid.Row="1"          
-                IsBackButtonVisible="Collapsed"
                 FontFamily="Khmer OS Battambang"
-                
+                IsBackButtonVisible="Auto"
                 IsSettingsVisible="False" Loaded="MainNV_Load" SelectionChanged="Main_NV_Items_SelectionChanged" OpenPaneLength="303">
             
             <NavigationView.MenuItems>

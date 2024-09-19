@@ -26,13 +26,28 @@ namespace RPISVR_Managements
         {
             this.InitializeComponent();
         }
+        public static Window MainAppWindow { get; private set; }
 
         protected override void OnLaunched(Microsoft.UI.Xaml.LaunchActivatedEventArgs args)
         {
-            m_window = new MainWindow();
-            m_window.Activate();
+            // Use only one window
+            if (MainAppWindow == null)
+            {
+                MainAppWindow = new MainWindow();  // Create and assign the window
+                MainAppWindow.Activate();  // Activate the window
+            }
+            //Old
+            //m_window = new MainWindow();
+            //m_window.Activate();
         }
+        // Helper method to access MainWindow-specific methods
+        public static MainWindow GetMainWindow()
+        {
+            return MainAppWindow as MainWindow;  // Safe cast to MainWindow
+        }
+        //public static MainWindow m_window { get; private set; }
+        
 
-        public static MainWindow m_window { get; private set; }
+        
     }
 }
