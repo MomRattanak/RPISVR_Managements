@@ -187,7 +187,7 @@ namespace RPISVR_Managements.Student_Informations.Insert_Student_Informations
             return WindowNative.GetWindowHandle(window);  // Get the window handle (HWND)
         }
         //Choose Image
-        private async Task<BitmapImage> Choose_Image_Stu()
+        private async Task<(BitmapImage, byte[])> Choose_Image_Stu()
         {
             FileOpenPicker openPicker = new FileOpenPicker();
 
@@ -211,32 +211,57 @@ namespace RPISVR_Managements.Student_Informations.Insert_Student_Informations
                 {
                     BitmapImage bitmapImage = new BitmapImage();
                     await bitmapImage.SetSourceAsync(stream);
-                    return bitmapImage;
+
+                    //Convert Image to byte array
+                    using (var memoryStream = new MemoryStream())
+                    {
+                        await stream.AsStreamForRead().CopyToAsync(memoryStream);
+                        byte[] imageBytes = memoryStream.ToArray();
+
+                        // Return both the BitmapImage and the byte array
+                        return (bitmapImage, imageBytes);
+                    }
+                    //return bitmapImage;
                 }
             }
 
             // Return null if no image is selected
-            return null;
+            return (null, null);
         }
         //btn_chooseimage_stu
         private async void btn_chooseimage_stu(object sender, RoutedEventArgs e)
         {
-            BitmapImage image = await Choose_Image_Stu();
-            if (image != null)
+            var (image, imageBytes) = await Choose_Image_Stu();
+            if (image != null && imageBytes != null)
             {
-                Stu_ShowImage.Source = image;  
+                // Update the ViewModel with the selected image and byte array
+                var viewModel = this.DataContext as StudentViewModel;
+                if (viewModel != null)
+                {
+                    viewModel.Stu_Image_Source = image;       // Set the image for UI display
+                    viewModel.ProfileImageBytes = imageBytes; // Set the byte array for storing
+                }
+
+                Stu_ShowImage.Source = image;  // Optionally, display it directly in the UI
             }
 
         }
 
         //btn_chooseimage_NationID
-        //btn_chooseimage_nationID
         private async void btn_chooseimage_nationID(object sender, RoutedEventArgs e)
         {
-            BitmapImage image = await Choose_Image_Stu();
-            if (image != null)
+            var (image, imageBytes) = await Choose_Image_Stu();
+            if (image != null && imageBytes != null)
             {
-                Stu_ShowImageIDNation.Source = image;
+                // Update the ViewModel with the selected image and byte array
+                var viewModel = this.DataContext as StudentViewModel;
+                if (viewModel != null)
+                {
+                    viewModel.Stu_ImageIDNation_Source = image;       // Set the image for UI display
+                    viewModel.Stu_ImageIDNation_Bytes = imageBytes; // Set the byte array for storing
+                }
+
+                Stu_ShowImageIDNation.Source = image; //Display it directly in the UI
             }
         }
 
@@ -248,29 +273,63 @@ namespace RPISVR_Managements.Student_Informations.Insert_Student_Informations
 
         private async void btn_chooseimage_Degree(object sender, RoutedEventArgs e)
         {
-            BitmapImage image = await Choose_Image_Stu();
-            if (image != null)
+            var (image, imageBytes) = await Choose_Image_Stu();
+            if (image != null && imageBytes != null)
             {
-                Stu_ShowImageDegree.Source = image;
+                // Update the ViewModel with the selected image and byte array
+                var viewModel = this.DataContext as StudentViewModel;
+                if (viewModel != null)
+                {
+                    viewModel.Stu_Image_Degree_Source = image;       // Set the image for UI display
+                    viewModel.Stu_Image_Degree_Bytes = imageBytes; // Set the byte array for storing
+                   
+                }
+
+                Stu_ShowImageDegree.Source = image; //Display it directly in the UI
             }
+            
+                
+
         }
 
         private async void btn_chooseImage_Birth_certificate(object sender, RoutedEventArgs e)
         {
-            BitmapImage image = await Choose_Image_Stu();
-            if (image != null)
+            var (image, imageBytes) = await Choose_Image_Stu();
+            if (image != null && imageBytes != null)
             {
-                Stu_ShowImage_Birth_Certifacate.Source = image;
+                // Update the ViewModel with the selected image and byte array
+                var viewModel = this.DataContext as StudentViewModel;
+                if (viewModel != null)
+                {
+                    viewModel.Stu_ImageBirth_Cert_Source = image;       // Set the image for UI display
+                    viewModel.Stu_ImageBirth_Cert_Bytes = imageBytes; // Set the byte array for storing
+                }
+
+                Stu_ShowImage_Birth_Certifacate.Source = image; //Display it directly in the UI
             }
+
+            
+            
         }
 
         private async void btn_chooseImage_Poor_card(object sender, RoutedEventArgs e)
         {
-            BitmapImage image = await Choose_Image_Stu();
-            if (image != null)
+            var (image, imageBytes) = await Choose_Image_Stu();
+            if (image != null && imageBytes != null)
             {
-                Stu_ShowImage_Poor_card.Source = image;
+                // Update the ViewModel with the selected image and byte array
+                var viewModel = this.DataContext as StudentViewModel;
+                if (viewModel != null)
+                {
+                    viewModel.Stu_ImagePoor_Card_Source = image;       // Set the image for UI display
+                    //viewModel.Stu_ImagePoor_Card_Bytes = imageBytes; // Set the byte array for storing
+                }
+
+                Stu_ShowImage_Poor_card.Source = image; //Display it directly in the UI
             }
+
+           
+            
         }
 
         private void Test_DialogFont(object sender, RoutedEventArgs e)

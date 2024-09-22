@@ -15,6 +15,10 @@ using Microsoft.UI.Xaml.Media;
 using Microsoft.UI;
 using Microsoft.UI.Xaml;
 using ABI.Microsoft.UI.Xaml;
+using Windows.Storage.Pickers;
+using WinRT.Interop;
+using RPISVR_Managements.Model;
+using Org.BouncyCastle.Tls;
 
 
 namespace RPISVR_Managements.ViewModel
@@ -36,6 +40,17 @@ namespace RPISVR_Managements.ViewModel
             SelectedDay = DateTime.Now.Day;
             SelectedYear = DateTime.Now.Year;
             SelectedKhmerMonth = KhmerMonths[DateTime.Now.Month - 1];
+
+            Stu_Insert_by_ID = "ADMIN001";
+            Stu_Insert_DateTime = DateTime.Now;
+            Stu_Insert_Info = "1";
+            Stu_Update_By_ID = "ADMIN001";
+            Stu_Update_DateTime = DateTime.Now;
+            Stu_Update_Info = "2";
+            Stu_Delete_By_ID = "ADMIN001";
+            Stu_Delete_DateTime= DateTime.Now;
+            Stu_Delete_Info = "3";
+
         }
         // Properties bound to the form fields
 
@@ -570,7 +585,20 @@ namespace RPISVR_Managements.ViewModel
             }
         }
 
-        //
+        //ID
+        //Stu_ID
+        private string _ID;
+        public string ID
+        {
+            get => _ID;
+            set
+            {
+                _ID = value;
+                OnPropertyChanged();
+                ValidateStuID();  // Validate in real-time as the user types
+            }
+        }
+
         //Stu_ID
         private string _Stu_ID;
         public string Stu_ID
@@ -1092,26 +1120,6 @@ namespace RPISVR_Managements.ViewModel
             }
         }
 
-        //Stu_Image_YesNo
-        private bool _IsStuImage_Yes;
-        public bool IsStuImage_Yes
-        {
-            get => _IsStuImage_Yes;
-            set
-            {
-                if (_IsStuImage_Yes != value)
-                {
-                    _IsStuImage_Yes = value;
-                    OnPropertyChanged(nameof(IsStuImage_Yes));
-                }
-            }
-        }
-        //String IsImage_Yes_No in Khmer
-        public string Stu_Image_YesNo
-        {
-            get => _IsStuImage_Yes ? "មានរូបថត" : "គ្មានរូបថត"; 
-        }
-
         //Stu_Father_Job
         private string _Stu_Father_Job;
         public string Stu_Father_Job
@@ -1127,44 +1135,171 @@ namespace RPISVR_Managements.ViewModel
             }
         }
 
-        //Stu_ImageIDegree_YesNo
-        private bool _Is_ImageIDegree_YesNo;
-        public bool Is_ImageIDegree_YesNo
+        //Stu_Image_YesNo
+        private bool _IsStuImage_Yes;
+        public bool IsStuImage_Yes
         {
-            get => _Is_ImageIDegree_YesNo;
+            get => _IsStuImage_Yes;
             set
             {
-                if (_Is_ImageIDegree_YesNo != value)
+                    if (_IsStuImage_Yes != value)
+                    {
+                        _IsStuImage_Yes = value;
+
+                        // Clear the image source when the toggle is turned off
+                        if (!_IsStuImage_Yes)
+                        {
+                            Stu_Image_Source = null;  // Clear the image when the toggle is off
+                            ProfileImageBytes = null; // Optionally clear the byte array as well
+                            Stu_Image_Total_Big = "0";
+                            Stu_Image_TotalSmall = "0";
+                        }
+
+                        // Notify that IsStuImage_Yes changed and that Stu_Image_YesNo needs to update
+                        OnPropertyChanged(nameof(IsStuImage_Yes));
+                        OnPropertyChanged(nameof(Stu_Image_YesNo));  // Notify text update
+                    }
+                    //_IsStuImage_Yes = value;
+                    //OnPropertyChanged(nameof(IsStuImage_Yes)); 
+            }
+        }
+
+        //String IsImage_Yes_No in Khmer
+        public string Stu_Image_YesNo
+        {
+            get => _IsStuImage_Yes ? "មានរូបថត" : "គ្មានរូបថត"; 
+        }
+
+        private BitmapImage _profileImageSource;  // For displaying image in the UI
+        private byte[] _profileImageBytes;  // For storing image as byte array
+
+        // Property for storing image in UI
+        public BitmapImage Stu_Image_Source
+        {
+            get => _profileImageSource;
+            set
+            {
+                _profileImageSource = value;
+                OnPropertyChanged();
+            }
+        }
+
+        // Property for storing image as byte array
+        public byte[] ProfileImageBytes
+        {
+            get => _profileImageBytes;
+            set
+            {
+                _profileImageBytes = value;
+                OnPropertyChanged();
+            }
+        }
+
+        //Stu_ImageDegree_YesNo
+        private bool _Is_ImageDegree_YesNo;
+        public bool Is_ImageDegree_YesNo
+        {
+            get => _Is_ImageDegree_YesNo;
+            set
+            {
+                if (_Is_ImageDegree_YesNo != value)
                 {
-                    _Is_ImageIDegree_YesNo = value;
-                    OnPropertyChanged(nameof(Is_ImageIDegree_YesNo));
+
+                    _Is_ImageDegree_YesNo = value;
+
+                        // Clear the image source when the toggle is turned off
+                        if (!_Is_ImageDegree_YesNo)
+                        {
+                            Stu_Image_Degree_Source = null;  // Clear the image when the toggle is off
+                            Stu_Image_Degree_Bytes = null; // Optionally clear the byte array as well
+                           
+                        }
+                        OnPropertyChanged(nameof(Is_ImageDegree_YesNo));
+                        OnPropertyChanged(nameof(Stu_ImageDegree_YesNo));  // Notify text update  
                 }
             }
         }
+
+        
+
         //String Stu_ImageDegree_Yes_No in Khmer
-        public string Stu_ImageIDegree_YesNo
+        public string Stu_ImageDegree_YesNo
         {
-            get => _Is_ImageIDegree_YesNo ? "មានរូបថត" : "គ្មានរូបថត"; 
+            get => _Is_ImageDegree_YesNo ? "មានរូបថត" : "គ្មានរូបថត"; 
+        }
+
+        private BitmapImage _Stu_Image_Degree_Source;  // For displaying image in the UI
+        public BitmapImage Stu_Image_Degree_Source
+        {
+            get => _Stu_Image_Degree_Source;
+            set
+            {
+                _Stu_Image_Degree_Source = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private byte[] _Stu_Image_Degree_Bytes;  // For storing image as byte array
+        public byte[] Stu_Image_Degree_Bytes
+        {
+            get => _Stu_Image_Degree_Bytes;
+            set
+            {
+                _Stu_Image_Degree_Bytes = value;
+                OnPropertyChanged();
+            }
         }
 
         //Stu_ImageIDegree_YesNo
-        private bool _Is_ImageIBirth_Cert_YesNo;
-        public bool Is_ImageIBirth_Cert_YesNo
+        private bool _Is_ImageBirth_Cert_YesNo;
+        public bool Is_ImageBirth_Cert_YesNo
         {
-            get => _Is_ImageIBirth_Cert_YesNo;
+            get => _Is_ImageBirth_Cert_YesNo;
             set
             {
-                if (_Is_ImageIBirth_Cert_YesNo != value)
+                if (_Is_ImageBirth_Cert_YesNo != value)
                 {
-                    _Is_ImageIBirth_Cert_YesNo = value;
-                    OnPropertyChanged(nameof(Is_ImageIBirth_Cert_YesNo));
+                    _Is_ImageBirth_Cert_YesNo = value;
+
+                    // Clear the image source when the toggle is turned off
+                    if (!_Is_ImageBirth_Cert_YesNo)
+                    {
+                        Stu_ImageBirth_Cert_Source = null;  // Clear the image when the toggle is off
+                        Stu_ImageBirth_Cert_Bytes = null; // Optionally clear the byte array as well
+
+                    }
+                    OnPropertyChanged(nameof(Is_ImageBirth_Cert_YesNo));
+                    OnPropertyChanged(nameof(Stu_ImageBirth_Cert_YesNo));  // Notify text update 
+                    
                 }
             }
         }
         //String Stu_ImageDegree_Yes_No in Khmer
-        public string Stu_ImageIBirth_Cert_YesNo
+        public string Stu_ImageBirth_Cert_YesNo
         {
-            get => _Is_ImageIBirth_Cert_YesNo ? "មានរូបថត" : "គ្មានរូបថត";
+            get => _Is_ImageBirth_Cert_YesNo ? "មានរូបថត" : "គ្មានរូបថត";
+        }
+
+        private BitmapImage _Stu_ImageBirth_Cert_Source;  // For displaying image in the UI
+        public BitmapImage Stu_ImageBirth_Cert_Source
+        {
+            get => _Stu_ImageBirth_Cert_Source;
+            set
+            {
+                _Stu_ImageBirth_Cert_Source = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private byte[] _Stu_ImageBirth_Cert_Bytes;  // For storing image as byte array
+        public byte[] Stu_ImageBirth_Cert_Bytes
+        {
+            get => _Stu_ImageBirth_Cert_Bytes;
+            set
+            {
+                _Stu_ImageBirth_Cert_Bytes = value;
+                OnPropertyChanged();
+            }
         }
 
         //Stu_ImageIDNation_YesNo
@@ -1177,17 +1312,50 @@ namespace RPISVR_Managements.ViewModel
                 if (_Is_Stu_ImageIDNation_YesNo != value)
                 {
                     _Is_Stu_ImageIDNation_YesNo = value;
+
+                    // Clear the image source when the toggle is turned off
+                    if (!_Is_Stu_ImageIDNation_YesNo)
+                    {
+                        Stu_ImageIDNation_Source = null;  // Clear the image when the toggle is off
+                        Stu_ImageIDNation_Bytes = null; // Optionally clear the byte array as well
+
+                    }
                     OnPropertyChanged(nameof(Is_Stu_ImageIDNation_YesNo));
+                    OnPropertyChanged(nameof(Stu_ImageIDNation_Source));  // Notify text update 
+                    
                 }
             }
         }
-        //String IsImage_Yes_No in Khmer
+
+        //String Stu_ImageIDNation_Yes_No in Khmer
         public string Stu_ImageIDNation_YesNo
         {
             get => _Is_Stu_ImageIDNation_YesNo ? "មានរូបថត" : "គ្មានរូបថត";
         }
 
-        //Stu_ImageIDNation_YesNo
+        private BitmapImage _Stu_ImageIDNation_Source;  // For displaying image in the UI
+        public BitmapImage Stu_ImageIDNation_Source
+        {
+            get => _Stu_ImageIDNation_Source;
+            set
+            {
+                _Stu_ImageIDNation_Source = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private byte[] _Stu_ImageIDNation_Bytes;  // For storing image as byte array
+        public byte[] Stu_ImageIDNation_Bytes
+        {
+            get => _Stu_ImageIDNation_Bytes;
+            set
+            {
+                _Stu_ImageIDNation_Bytes = value;
+                OnPropertyChanged();
+            }
+        }
+
+        //Stu_Image_Poor_Card_YesNo
         private bool _Is_ImagePoor_Card_YesNo;
         public bool Is_ImagePoor_Card_YesNo
         {
@@ -1197,16 +1365,48 @@ namespace RPISVR_Managements.ViewModel
                 if (_Is_ImagePoor_Card_YesNo != value)
                 {
                     _Is_ImagePoor_Card_YesNo = value;
+
+                    // Clear the image source when the toggle is turned off
+                    if (!_Is_ImagePoor_Card_YesNo)
+                    {
+                        Stu_ImagePoor_Card_Source = null;  // Clear the image when the toggle is off
+                        Stu_Image_Poor_Card_Bytes = null; // Optionally clear the byte array as well
+
+                    }
                     OnPropertyChanged(nameof(Is_ImagePoor_Card_YesNo));
+                    OnPropertyChanged(nameof(Stu_ImagePoor_Card_Source));  // Notify text update 
+                    //_Is_ImagePoor_Card_YesNo = value;
+                    //OnPropertyChanged(nameof(Is_ImagePoor_Card_YesNo));
                 }
             }
         }
-        //String IsImage_Yes_No in Khmer
+        //String Stu_Image_Poor_Yes_No in Khmer
         public string Stu_ImagePoor_Card_YesNo
         {
             get => _Is_ImagePoor_Card_YesNo ? "មានរូបថត" : "គ្មានរូបថត";
         }
 
+        private BitmapImage _Stu_ImagePoor_Card_Source;  // For displaying image in the UI
+        public BitmapImage Stu_ImagePoor_Card_Source
+        {
+            get => _Stu_ImagePoor_Card_Source;
+            set
+            {
+                _Stu_ImagePoor_Card_Source = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private byte[] _Stu_Image_Poor_Card_Bytes;  // For storing image as byte array
+        public byte[] Stu_Image_Poor_Card_Bytes
+        {
+            get => _Stu_Image_Poor_Card_Bytes;
+            set
+            {
+                _Stu_Image_Poor_Card_Bytes = value;
+                OnPropertyChanged();
+            }
+        }
 
         //Stu_Image_Total_Big
         private string _Stu_Image_Total_Big;
@@ -1237,6 +1437,115 @@ namespace RPISVR_Managements.ViewModel
                     OnPropertyChanged(nameof(Stu_Image_TotalSmall));
                     ValidateStu_Image_TotalSmall();
                 }
+            }
+        }
+
+        //Stu_Insert_by_ID
+        private string _Stu_Insert_by_ID;
+        public string Stu_Insert_by_ID
+        {
+            get => _Stu_Insert_by_ID;
+            set
+            {
+                _Stu_Insert_by_ID = value;
+                OnPropertyChanged();
+            }
+                
+        }
+
+        //Stu_Insert_DateTime
+        private DateTime _Stu_Insert_DateTime;
+        public DateTime Stu_Insert_DateTime
+        {
+            get => _Stu_Insert_DateTime;
+            set
+            {
+                _Stu_Insert_DateTime = value;
+                OnPropertyChanged();
+            }
+        }
+
+        //Stu_Insert_Info
+        private string _Stu_Insert_Info;
+        public string Stu_Insert_Info
+        {
+            get => _Stu_Insert_Info;
+            set
+            {
+                _Stu_Insert_Info = value;
+                OnPropertyChanged();
+            }
+        }
+
+        //Stu_Update_By_ID
+        private string _Stu_Update_By_ID;
+        public string Stu_Update_By_ID
+        {
+            get => _Stu_Update_By_ID;
+            set
+            {
+                _Stu_Update_By_ID = value;
+                OnPropertyChanged();
+            }
+        }
+
+        //Stu_Update_DateTime
+        private DateTime _Stu_Update_DateTime;
+        public DateTime Stu_Update_DateTime
+        {
+            get => _Stu_Update_DateTime;
+            set
+            {
+                _Stu_Update_DateTime = value;
+                OnPropertyChanged();
+            }
+        }
+
+        //Stu_Update_Info
+        private string _Stu_Update_Info;
+        public string Stu_Update_Info
+        {
+            get => _Stu_Update_Info;
+            set
+            {
+                _Stu_Update_Info = value;
+                OnPropertyChanged();
+            }
+        }
+
+        //Stu_Delete_By_ID
+        private string _Stu_Delete_By_ID;
+        public string Stu_Delete_By_ID
+        {
+            get => _Stu_Delete_By_ID;
+            set
+            {
+                _Stu_Delete_By_ID = value;
+                OnPropertyChanged();
+            }
+        }
+
+        //Stu_Delete_DateTime
+        private DateTime _Stu_Delete_DateTime;
+        public DateTime Stu_Delete_DateTime
+        {
+            get => _Stu_Delete_DateTime;
+            set
+            {
+                _Stu_Delete_DateTime = value;
+                OnPropertyChanged();
+            }
+        }
+
+        //Stu_Delete_Info
+        private string _Stu_Delete_Info;
+        public string Stu_Delete_Info
+        {
+            get => _Stu_Delete_By_ID;
+            set
+            {
+                _Stu_Delete_By_ID = value;
+                OnPropertyChanged();
             }
         }
 
@@ -1296,8 +1605,151 @@ namespace RPISVR_Managements.ViewModel
             }
         }
 
-            //Focus on TextBox
-            // Define an event to notify the View
+        //SaveStudentInformationtoDatabase
+        public void SaveStudentInformationToDatabase()
+        {
+            DatabaseConnection dbConnection = new DatabaseConnection();
+
+            Student_Info student_Info = new Student_Info
+            {
+                Stu_ID = this.Stu_ID,
+                Stu_FirstName_KH = this.Stu_FirstName_KH,
+                Stu_LastName_KH = this.Stu_LastName_KH,
+                Stu_FirstName_EN = this.Stu_FirstName_EN,
+                Stu_LastName_EN = this.Stu_LastName_EN,
+                Stu_Gender = this.Stu_Gender,
+                Stu_StateFamily = this.Stu_StateFamily,
+                Stu_BirthdayDateOnly = this.Stu_BirthdayDateOnly,
+                Stu_EducationLevels = this.Stu_EducationLevels,
+                Stu_EducationSubjects = this.Stu_EducationSubjects,
+                Stu_StudyTimeShift = this.Stu_StudyTimeShift,
+                Stu_PhoneNumber = this.Stu_PhoneNumber,
+                Stu_EducationType = this.Stu_EducationType,
+                Stu_NationalID = this.Stu_NationalID,
+                Stu_StudyingTime = this.Stu_StudyingTime,
+                Stu_Birth_Province = this.Stu_Birth_Province,
+                Stu_Birth_Distric = this.Stu_Birth_Distric,
+                Stu_Birth_Commune = this.Stu_Birth_Commune,
+                Stu_Birth_Village = this.Stu_Birth_Village,
+                Stu_Live_Pro = this.Stu_Live_Pro,
+                Stu_Live_Dis = this.Stu_Live_Dis,
+                Stu_Live_Comm = this.Stu_Live_Comm,
+                Stu_Live_Vill = this.Stu_Live_Vill,
+                Stu_Jobs = this.Stu_Jobs,
+                Stu_School = this.Stu_School,
+                Stu_StudyYear = this.Stu_StudyYear,
+                Stu_Semester = this.Stu_Semester,
+                Stu_Mother_Name = this.Stu_Mother_Name,
+                Stu_Mother_Phone = this.Stu_Mother_Phone,
+                Stu_Mother_Job = this.Stu_Mother_Job,
+                Stu_Father_Name = this.Stu_Father_Name,
+                Stu_Father_Phone = this.Stu_Father_Phone,
+                Stu_Father_Job = this.Stu_Father_Job,
+                Stu_Image_YesNo = this.Stu_Image_YesNo,
+                ProfileImageBytes = this.ProfileImageBytes,
+                Stu_Image_Total_Big = this.Stu_Image_Total_Big,
+                Stu_Image_TotalSmall = this.Stu_Image_TotalSmall,
+                Stu_Images_Degree_Yes_No = this.Stu_ImageDegree_YesNo,
+                Stu_Image_Degree_Bytes = this.Stu_Image_Degree_Bytes,
+                Stu_ImageBirth_Cert_YesNo = this.Stu_ImageBirth_Cert_YesNo,
+                Stu_ImageBirth_Cert_Bytes = this.Stu_ImageBirth_Cert_Bytes,
+                Stu_ImageIDNation_YesNo = this.Stu_ImageIDNation_YesNo,
+                Stu_ImageIDNation_Bytes = this.Stu_ImageIDNation_Bytes,
+                Stu_ImagePoor_Card_YesNo = this.Stu_ImagePoor_Card_YesNo,
+                Stu_Image_Poor_Card_Bytes = this.Stu_Image_Poor_Card_Bytes,
+                Stu_Insert_by_ID = this.Stu_Insert_by_ID,
+                Stu_Insert_DateTime = this.Stu_Insert_DateTime,
+                Stu_Insert_Info = this.Stu_Insert_Info,
+                Stu_Update_By_ID = this.Stu_Update_By_ID,
+                Stu_Update_DateTime = this.Stu_Update_DateTime,
+                Stu_Update_Info = this.Stu_Update_Info,
+                Stu_Delete_By_ID = this.Stu_Delete_By_ID,
+                Stu_Delete_DateTime = this.Stu_Delete_DateTime,
+                Stu_Delete_Info = this.Stu_Delete_Info,
+            };
+            bool success = dbConnection.Insert_Student_Information(student_Info);
+
+            if(success)
+            {
+                
+                ErrorMessage = "លេខសម្ភាល់ " + Stu_ID + " បានរក្សាទុកជោគជ័យ !";
+                ErrorImageSource = new BitmapImage(new Uri("ms-appx:///Assets/icons8-check-96.png"));
+                MessageColor = new SolidColorBrush(Colors.Green);
+               
+            }
+            else
+            {
+                ErrorMessage = "លេខសម្ភាល់ "+Stu_ID + " រក្សាទុកបរាជ៏យ !";
+                ErrorImageSource = new BitmapImage(new Uri("ms-appx:///Assets/icons8-fail-96.png"));
+                MessageColor = new SolidColorBrush(Colors.Red);
+            }
+        }
+
+        //Method for Clear Text
+        public void ClearStudentInfo()
+        {
+            //Stu_ID = "";
+            Stu_FirstName_KH =string.Empty;
+            Stu_LastName_KH = string.Empty;
+            Stu_FirstName_EN = string.Empty;
+            Stu_LastName_EN = string.Empty ;
+            //Stu_Gender = string.Empty;
+            //Stu_StateFamily = string.Empty;
+            //Stu_BirthdayDateOnly = null;
+            Stu_EducationLevels = string.Empty;
+            Stu_EducationSubjects = string.Empty;
+            Stu_StudyTimeShift = string.Empty;
+            Stu_PhoneNumber = string.Empty;
+            Stu_EducationType = string.Empty;
+            Stu_NationalID = string.Empty;
+            Stu_StudyingTime = string.Empty;
+            Stu_Birth_Province = string.Empty;
+            Stu_Birth_Distric = string.Empty;
+            Stu_Birth_Commune = string.Empty;
+            Stu_Birth_Village = string.Empty;
+            Stu_Live_Pro = string.Empty;
+            Stu_Live_Dis = string.Empty;
+            Stu_Live_Comm = string.Empty;
+            Stu_Live_Vill = string.Empty;
+            Stu_Jobs = string.Empty;
+            Stu_School = string.Empty;
+            Stu_StudyYear = string.Empty;
+            Stu_Semester = string.Empty;
+            Stu_Mother_Name = string.Empty;
+            Stu_Mother_Phone = string.Empty;
+            Stu_Mother_Job = string.Empty;
+            Stu_Father_Name = string.Empty;
+            Stu_Father_Phone = string.Empty;
+            Stu_Father_Job = string.Empty;
+            //Stu_Image_YesNo = null;
+            Stu_Image_Source=null;
+            ProfileImageBytes = null;
+            Stu_Image_Total_Big = string.Empty;
+            Stu_Image_TotalSmall = string.Empty;
+            //Stu_Images_Degree_Yes_No = null;
+            Stu_Image_Degree_Source = null;
+            Stu_Image_Degree_Bytes = null;
+            //Stu_ImageBirth_Cert_YesNo = null;
+            Stu_ImageBirth_Cert_Bytes = null;
+            Stu_ImageBirth_Cert_Source=null;
+            //Stu_ImageIDNation_YesNo = null;
+            Stu_ImageIDNation_Bytes = null;
+            Stu_ImageIDNation_Source=null;
+            //Stu_ImagePoor_Card_YesNo = null;
+            Stu_ImagePoor_Card_Source = null;   
+            Stu_Image_Poor_Card_Bytes = null;
+            Stu_Insert_by_ID = string.Empty;
+            Stu_Insert_DateTime = this.Stu_Insert_DateTime;
+            Stu_Insert_Info = this.Stu_Insert_Info;
+            Stu_Update_By_ID = string.Empty ;
+            Stu_Update_DateTime = this.Stu_Update_DateTime;
+            Stu_Update_Info = this.Stu_Update_Info;
+            Stu_Delete_By_ID = string.Empty;
+            Stu_Delete_DateTime = this.Stu_Delete_DateTime;
+            Stu_Delete_Info = this.Stu_Delete_Info;
+
+        }
+        // Define an event to notify the View
         public event EventHandler RequestStuIDFocus;
         //Validation Check TextBox
         public async Task SubmitAsync()
@@ -1568,18 +2020,17 @@ namespace RPISVR_Managements.ViewModel
             Debug.WriteLine($"Stu_StudyYear: {Stu_StudyYear}");
             Debug.WriteLine($"Stu_Semester: {Stu_Semester}");
             Debug.WriteLine($"Stu_Image_YesNo:{Stu_Image_YesNo}");
-            Debug.WriteLine($"Stu_ImageIDegree_YesNo:{Stu_ImageIDegree_YesNo}");
-            Debug.WriteLine($"Stu_ImageIBirth_Cert_YesNo:{Stu_ImageIBirth_Cert_YesNo}");
-            Debug.WriteLine($"Stu_ImageIDNation_YesNo:{Stu_ImageIDNation_YesNo}");
+            Debug.WriteLine($"Stu_ImageDegree_YesNo:{Stu_ImageDegree_YesNo}");
+            Debug.WriteLine($"Stu_ImageBirth_Cert_YesNo:{Stu_ImageBirth_Cert_YesNo}");
+            Debug.WriteLine($"Stu_ImageDNation_YesNo:{Stu_ImageIDNation_YesNo}");
             Debug.WriteLine($"Stu_ImagePoor_Card_YesNo:{Stu_ImagePoor_Card_YesNo}");
             Debug.WriteLine($"Stu_Image_Total_Big:{Stu_Image_Total_Big}");
             Debug.WriteLine($"Stu_Image_TotalSmall:{Stu_Image_TotalSmall}");
 
 
             // If everything is valid
-            ErrorMessage = Stu_ID+" បានរក្សាទុកជោគជ័យ !";
-            ErrorImageSource = new BitmapImage(new Uri("ms-appx:///Assets/icons8-check-96.png"));
-            MessageColor = new SolidColorBrush(Colors.Green);
+            SaveStudentInformationToDatabase();
+            ClearStudentInfo();
             await Task.CompletedTask;
             
         }
@@ -1675,6 +2126,8 @@ namespace RPISVR_Managements.ViewModel
             }
         }
         //End
+
+        
         public event PropertyChangedEventHandler PropertyChanged;
         protected void OnPropertyChanged([CallerMemberName] string name = null)
         {
