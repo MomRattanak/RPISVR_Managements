@@ -8,28 +8,26 @@ namespace RPISVR_Managements.Model
 {
     public class Student_Info
     {
-
+        public int ID { get; set; }
         public string Stu_ID { get; set; }
         public string Stu_FirstName_KH { get; set; }
         public string Stu_LastName_KH { get; set; }
         public string Stu_FirstName_EN { get; set; }
         public string Stu_LastName_EN { get; set; }
         public string Stu_Gender { get; set; }
-        public DateTime Stu_Birthday { get; set; }
-        public string Stu_StateFamil { get; set; }
-        public string Stu_Levels { get; set; }
-        public string Stu_Subject { get; set; }
-        public string Stu_StudyTime { get; set; }
+        public string Stu_StateFamily { get; set; }
+        public string Stu_BirthdayDateOnly { get; set; } 
+        public string Stu_EducationLevels { get; set; }
+        public string Stu_EducationSubjects { get; set; }
+        public string Stu_StudyTimeShift { get; set; }
         public string Stu_PhoneNumber { get; set; }
-        public string Stu_TypeStudy { get; set; }
+        public string Stu_EducationType { get; set; }
         public string Stu_NationalID { get; set; }
         public string Stu_StudyingTime { get; set; }
-        public string Title_Place { get; set; }
         public string Stu_Birth_Province { get; set; }
         public string Stu_Birth_Distric { get; set; }
         public string Stu_Birth_Commune { get; set; }
         public string Stu_Birth_Village { get; set; }
-        public string Title_Place02 { get; set; }
         public string Stu_Live_Pro { get; set; }
         public string Stu_Live_Dis { get; set; }
         public string Stu_Live_Comm { get; set; }
@@ -37,15 +35,34 @@ namespace RPISVR_Managements.Model
         public string Stu_Jobs { get; set; }
         public string Stu_School { get; set; }
         public string Stu_StudyYear { get; set; }
+        public string Stu_Semester { get; set; }
         public string Stu_Mother_Name { get; set; }
-        public int Stu_Mother_Phone { get; set; }
+        public string Stu_Mother_Phone { get; set; }
         public string Stu_Mother_Job { get; set; }
         public string Stu_Father_Name { get; set; }
-        public int Stu_Father_Phone { get; set; }
+        public string Stu_Father_Phone { get; set; }
         public string Stu_Father_Job { get; set; }
-        public string Stu_ChooseImage { get; set; }
-        //public string Stu_Image_YesNo { get; set; }
-        //public string Stu_ShowImage { get; set; }
-        
+        public string Stu_Image_YesNo { get; set; }
+        public byte[] ProfileImageBytes { get; set; }
+        public string Stu_Image_Total_Big { get; set; }
+        public string Stu_Image_TotalSmall { get; set; }
+        public string Stu_Images_Degree_Yes_No { get; set; }
+        public byte[] Stu_Image_Degree_Bytes { get; set; }
+        public string Stu_ImageBirth_Cert_YesNo { get; set; }
+        public byte[] Stu_ImageBirth_Cert_Bytes { get; set; }
+        public string Stu_ImageIDNation_YesNo { get; set; }
+        public byte[] Stu_ImageIDNation_Bytes { get; set; }
+        public string Stu_ImagePoor_Card_YesNo { get; set; }
+        public byte[] Stu_Image_Poor_Card_Bytes { get; set; }
+        public string Stu_Insert_by_ID { get; set; }
+        public DateTime Stu_Insert_DateTime { get; set; }
+        public string Stu_Insert_Info {  get; set; }
+        public string Stu_Update_By_ID { get; set; }
+        public DateTime Stu_Update_DateTime { get; set; }
+        public string Stu_Update_Info { get; set; }
+        public string Stu_Delete_By_ID { get; set; }
+        public DateTime Stu_Delete_DateTime { get; set; }
+        public string Stu_Delete_Info { get; set; }
+    
     }
 }

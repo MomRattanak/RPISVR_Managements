@@ -454,7 +454,8 @@
                                     RelativePanel.RightOf="Line_5"
                                     Margin="5"
                                     Width="200"
-                                    Click="btn_chooseimage_stu">
+                                    Click="btn_chooseimage_stu"
+                                    IsEnabled="{Binding IsOn,ElementName=Stu_Image_YesNo}">
                             <Button.Resources>
                                 <SolidColorBrush x:Key="ButtonBackgroundPointerOver" Color="#605EFF" />
                             </Button.Resources>
@@ -472,16 +473,18 @@
                                     RelativePanel.RightOf="Line_5"
                                     RelativePanel.Below="Stu_ChooseImage"
                                     Margin="10,0,0,0"
-                                    IsOn="{Binding Stu_Image_YesNo,Mode=TwoWay}"/>
+                                    IsOn="{Binding IsStuImage_Yes,Mode=TwoWay}"/>
                         <Image x:Name="Stu_ShowImage"
                              Width="100"
                              Height="130"
+                             Source="{Binding Stu_Image_Source,Mode=TwoWay}"
                              RelativePanel.RightOf="Line_5"
                              RelativePanel.Below="Stu_Image_YesNo" 
                              />
                         <NumberBox x:Name="Stu_Image_Total_Big"
                                  Header="ចំនួនរូបថតធំ"
                                  Value="0"
+                                 IsEnabled="{Binding IsOn,ElementName=Stu_Image_YesNo}"
                                  Text="{Binding Stu_Image_Total_Big,Mode=TwoWay}"
                                  Style="{StaticResource Stye_KH_NumberBox}"
                                  RelativePanel.RightOf="Stu_ShowImage"
@@ -492,6 +495,7 @@
                         <NumberBox x:Name="Stu_Image_TotalSmall"
                                  Header="ចំនួនរូបថតតូច"
                                  Value="0"
+                                 IsEnabled="{Binding IsOn,ElementName=Stu_Image_YesNo}"
                                  Text="{Binding Stu_Image_TotalSmall,Mode=TwoWay}"
                                  Style="{StaticResource Stye_KH_NumberBox}"
                                  RelativePanel.RightOf="Stu_ShowImage"
@@ -511,7 +515,8 @@
                                 Style="{StaticResource Stye_KH_TogleButton}"
                                 RelativePanel.RightOf="Line_7"
                                 Margin="5"
-                                Width="200">
+                                Width="200"
+                                IsEnabled="{Binding IsOn, ElementName=Stu_ImageIDegree_YesNo}">
                             <Button.Resources>
                                 <SolidColorBrush x:Key="ButtonBackgroundPointerOver" Color="#605EFF" />
                             </Button.Resources>
@@ -526,7 +531,7 @@
                         <ToggleSwitch x:Name="Stu_ImageIDegree_YesNo"
                                       OnContent="មានរូប"
                                       OffContent="គ្មានរូប"
-                                      IsOn="{Binding Stu_ImageIDegree_YesNo,Mode=TwoWay}"
+                                      IsOn="{Binding Is_ImageDegree_YesNo,Mode=TwoWay}"
                                       Style="{StaticResource Stye_KH_ToggleSwitch}"
                                       RelativePanel.RightOf="Line_7"
                                       RelativePanel.Below="Stu_ChooseImageDegree"
@@ -535,6 +540,7 @@
                                  Width="100"
                                  Height="130"
                                  Margin="5,0,0,0"
+                                 Source="{Binding Stu_Image_Degree_Source,Mode=TwoWay}"
                                  RelativePanel.RightOf="Line_7"
                                  RelativePanel.Below="Stu_ImageIDegree_YesNo"/>
                         <Line X1="0" Y1="10" X2="0" Y2="230" 
@@ -548,7 +554,8 @@
                                 Style="{StaticResource Stye_KH_TogleButton}"
                                 RelativePanel.RightOf="Line_8"
                                 Margin="5"
-                                Width="200">
+                                Width="200"
+                                IsEnabled="{Binding IsOn,ElementName=Stu_ImageIBirth_Cert_YesNo}">
                             <Button.Resources>
                                 <SolidColorBrush x:Key="ButtonBackgroundPointerOver" Color="#605EFF" />
                             </Button.Resources>
@@ -563,7 +570,7 @@
                         <ToggleSwitch x:Name="Stu_ImageIBirth_Cert_YesNo"
                                       OnContent="មានរូប"
                                       OffContent="គ្មានរូប"
-                                      IsOn="{Binding Stu_ImageIBirth_Cert_YesNo,Mode=TwoWay}"
+                                      IsOn="{Binding Is_ImageBirth_Cert_YesNo,Mode=TwoWay}"
                                       Style="{StaticResource Stye_KH_ToggleSwitch}"
                                       RelativePanel.RightOf="Line_8"
                                       RelativePanel.Below="Stu_ChooseImage_Birth_certificate"
@@ -572,6 +579,7 @@
                                          Width="100"
                                          Height="130"
                                          Margin="5,0,0,0"
+                                         Source="{Binding Stu_ImageBirth_Cert_Source,Mode=TwoWay}"
                                          RelativePanel.RightOf="Line_8"
                                          RelativePanel.Below="Stu_ImageIBirth_Cert_YesNo"/>
 
@@ -586,7 +594,8 @@
                                   Style="{StaticResource Stye_KH_TogleButton}"
                                   RelativePanel.RightOf="Line_9"
                                   Margin="5"
-                                  Width="200">
+                                  Width="200"
+                                  IsEnabled="{Binding IsOn, ElementName=Stu_ImageIDNation_YesNo}">
                             <Button.Resources>
                                 <SolidColorBrush x:Key="ButtonBackgroundPointerOver" Color="#605EFF" />
                             </Button.Resources>
@@ -600,7 +609,7 @@
                         <ToggleSwitch x:Name="Stu_ImageIDNation_YesNo"
                                       OnContent="មានរូប"
                                       OffContent="គ្មានរូប"
-                                      IsOn="{Binding Stu_ImageIDNation_YesNo,Mode=TwoWay}"
+                                      IsOn="{Binding Is_Stu_ImageIDNation_YesNo,Mode=TwoWay}"
                                       Style="{StaticResource Stye_KH_ToggleSwitch}"
                                       RelativePanel.RightOf="Line_9"
                                       RelativePanel.Below="Stu_ChooseImageIDNation"
@@ -609,6 +618,7 @@
                                  Width="200"
                                  Height="140"
                                  Margin="5,0,0,0"
+                                 Source="{Binding Stu_ImageIDNation_Source,Mode=TwoWay}"
                                  RelativePanel.RightOf="Line_9"
                                  RelativePanel.Below="Stu_ImageIDNation_YesNo"/>
                         <Line X1="0" Y1="10" X2="0" Y2="230" 
@@ -622,7 +632,8 @@
                                 Style="{StaticResource Stye_KH_TogleButton}"
                                 RelativePanel.RightOf="Line_10"
                                 Margin="5"
-                                Width="200">
+                                Width="200"
+                                IsEnabled="{Binding IsOn,ElementName=Stu_ImagePoor_Card_YesNo}">
                             <Button.Resources>
                                 <SolidColorBrush x:Key="ButtonBackgroundPointerOver" Color="#605EFF" />
                             </Button.Resources>
@@ -636,7 +647,7 @@
                         <ToggleSwitch x:Name="Stu_ImagePoor_Card_YesNo"
                                       OnContent="មានរូប"
                                       OffContent="គ្មានរូប"
-                                      IsOn="{Binding Stu_ImagePoor_Card_YesNo,Mode=TwoWay}"
+                                      IsOn="{Binding Is_ImagePoor_Card_YesNo,Mode=TwoWay}"
                                       Style="{StaticResource Stye_KH_ToggleSwitch}"
                                       RelativePanel.RightOf="Line_10"
                                       RelativePanel.Below="Stu_ChooseImage_Poor_card"
@@ -645,6 +656,7 @@
                                  Width="200"
                                  Height="140"
                                  Margin="5,0,0,0"
+                                 Source="{Binding Stu_ImagePoor_Card_Source,Mode=TwoWay}"
                                  RelativePanel.RightOf="Line_10"
                                  RelativePanel.Below="Stu_ImagePoor_Card_YesNo"/>
 
