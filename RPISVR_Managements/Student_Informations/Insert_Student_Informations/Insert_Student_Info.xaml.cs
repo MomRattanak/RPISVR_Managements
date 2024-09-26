@@ -322,7 +322,7 @@ namespace RPISVR_Managements.Student_Informations.Insert_Student_Informations
                 if (viewModel != null)
                 {
                     viewModel.Stu_ImagePoor_Card_Source = image;       // Set the image for UI display
-                    //viewModel.Stu_ImagePoor_Card_Bytes = imageBytes; // Set the byte array for storing
+                    viewModel.Stu_Image_Poor_Card_Bytes = imageBytes; // Set the byte array for storing
                 }
 
                 Stu_ShowImage_Poor_card.Source = image; //Display it directly in the UI

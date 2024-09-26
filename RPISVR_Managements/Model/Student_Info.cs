@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.UI.Xaml.Media.Imaging;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -44,15 +45,20 @@ namespace RPISVR_Managements.Model
         public string Stu_Father_Job { get; set; }
         public string Stu_Image_YesNo { get; set; }
         public byte[] ProfileImageBytes { get; set; }
+        public BitmapImage Stu_Image_Source { get; set; }
         public string Stu_Image_Total_Big { get; set; }
         public string Stu_Image_TotalSmall { get; set; }
         public string Stu_Images_Degree_Yes_No { get; set; }
+        public BitmapImage Stu_Image_Degree_Source { get; set; }
         public byte[] Stu_Image_Degree_Bytes { get; set; }
         public string Stu_ImageBirth_Cert_YesNo { get; set; }
+        public BitmapImage Stu_ImageBirth_Cert_Source { get;set; }
         public byte[] Stu_ImageBirth_Cert_Bytes { get; set; }
         public string Stu_ImageIDNation_YesNo { get; set; }
+        public BitmapImage Stu_ImageIDNation_Source { get;set;}
         public byte[] Stu_ImageIDNation_Bytes { get; set; }
         public string Stu_ImagePoor_Card_YesNo { get; set; }
+        public BitmapImage Stu_ImagePoor_Card_Source { get; set; }
         public byte[] Stu_Image_Poor_Card_Bytes { get; set; }
         public string Stu_Insert_by_ID { get; set; }
         public DateTime Stu_Insert_DateTime { get; set; }

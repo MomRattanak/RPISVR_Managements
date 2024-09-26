@@ -19,18 +19,39 @@ using Windows.Storage.Pickers;
 using WinRT.Interop;
 using RPISVR_Managements.Model;
 using Org.BouncyCastle.Tls;
+using System.Collections.ObjectModel;
 
 
 namespace RPISVR_Managements.ViewModel
 {
     public class StudentViewModel:INotifyPropertyChanged 
     {
-        
+        private ObservableCollection<Student_Info> _students;
+        private readonly DatabaseConnection _dbConnection;
+        private DatabaseConnection _studentModel;
+
+
+        private int _currentPage = 1;
+        private int _totalPages;
+        private int _pageSize = 10;
+        private int _totalStudents;
+        public int TotalPages => (_totalStudents + _pageSize - 1) / _pageSize;
+
+        public ICommand PreviousPageCommand { get; }
+        public ICommand NextPageCommand { get; }
+
         public StudentViewModel()
         {
           
             SubmitCommand = new RelayCommand(async () => await SubmitAsync());
- 
+            _dbConnection = new DatabaseConnection();
+
+            Students = new ObservableCollection<Student_Info>();
+            Debug.WriteLine("Students loaded: " + Students.Count);
+
+
+            PreviousPageCommand = new RelayCommand(PreviousPage, CanGoPreviousPage);
+            NextPageCommand = new RelayCommand(NextPage, CanGoNextPage);
 
             // Populate Days and Years
             for (int i = 1; i <= 31; i++) Days.Add(i); // Days 1-31
@@ -50,9 +71,109 @@ namespace RPISVR_Managements.ViewModel
             Stu_Delete_By_ID = "ADMIN001";
             Stu_Delete_DateTime= DateTime.Now;
             Stu_Delete_Info = "3";
+            
+
+            //Get ID and Stu_ID
+            _studentModel = new DatabaseConnection();
+            _totalStudents = _studentModel.GetTotalStudentsCount();
+            var (id,stu_ID) = _studentModel.Get_ID_and_Stu_ID();
+            LoadStudents();
+            ID = id;
+            Stu_ID = stu_ID;
+            Debug.WriteLine("New ID: " + ID);
+            Debug.WriteLine("New Stu_ID: " + stu_ID);
+
 
         }
-        // Properties bound to the form fields
+        public ObservableCollection<Student_Info> Students
+        {
+            get => _students;
+            set
+            {
+                _students = value;
+                OnPropertyChanged(nameof(Students));  // Notify the UI when the Students collection changes
+            }
+        }
+        // Method to load students from the database, including images
+        private void LoadStudents()
+        {
+            var studentsList = _dbConnection.GetStudents_Info(CurrentPage, _pageSize);
+            // Clear the existing list to prepare for the new page data
+            Students.Clear();
+            Debug.WriteLine("Loading students for page: " + CurrentPage);
+            // Iterate over the studentsList returned by the database and add them to the ObservableCollection
+            foreach (var student in studentsList)
+            {
+                Students.Add(student);
+            }
+            Students = new ObservableCollection<Student_Info>(studentsList);
+
+            // Raise CanExecuteChanged to update button states
+            (NextPageCommand as RelayCommand)?.RaiseCanExecuteChanged();
+            (PreviousPageCommand as RelayCommand)?.RaiseCanExecuteChanged();
+        }
+
+        public int CurrentPage
+        {
+            get => _currentPage;
+            set
+            {
+                _currentPage = value;
+                OnPropertyChanged(nameof(CurrentPage));
+                OnPropertyChanged(nameof(PageInfo));
+            }
+        }
+
+        public int TotalPageS
+        {
+            get => _totalPages;
+            set
+            {
+                _totalPages = value;
+                OnPropertyChanged(nameof(TotalPages));
+                OnPropertyChanged(nameof(PageInfo));
+            }
+        }
+
+        private void NextPage()
+        {
+            Debug.WriteLine("Next Page Command Executed");
+            if (CurrentPage < TotalPages)
+            {
+                CurrentPage++;
+                LoadStudents();
+                OnPageChanged();
+                Debug.WriteLine($"Current Page: {CurrentPage}");
+            }
+        }
+
+  
+        private void PreviousPage()
+        {
+            if (CurrentPage > 1)
+            {
+                CurrentPage--;
+                LoadStudents();
+                Debug.WriteLine($"Current Page: {CurrentPage}");
+            }
+            OnPropertyChanged(nameof(CanGoPreviousPage));  // Notify the UI to enable or disable the button
+        }
+        private bool CanGoPreviousPage()
+        {
+            return CurrentPage > 1;  // Enable only if not on the first page
+        }
+
+        private bool CanGoNextPage()
+        {
+            return CurrentPage < TotalPages;  // Enable only if not on the last page
+        }
+
+        private void OnPageChanged()
+        {
+            (PreviousPageCommand as RelayCommand)?.RaiseCanExecuteChanged();
+            (NextPageCommand as RelayCommand)?.RaiseCanExecuteChanged();
+        }
+
 
         //Color Border Error in Input Box.
         private SolidColorBrush _ErrorBorderBrush = new SolidColorBrush(Colors.Transparent); // Default transparent border
@@ -586,16 +707,14 @@ namespace RPISVR_Managements.ViewModel
         }
 
         //ID
-        //Stu_ID
-        private string _ID;
-        public string ID
+        private int _ID;
+        public int ID
         {
             get => _ID;
             set
             {
                 _ID = value;
-                OnPropertyChanged();
-                ValidateStuID();  // Validate in real-time as the user types
+                OnPropertyChanged(nameof(ID));
             }
         }
 
@@ -604,10 +723,16 @@ namespace RPISVR_Managements.ViewModel
         public string Stu_ID
         {
             get => _Stu_ID;
-            set { 
-                _Stu_ID = value;
-                OnPropertyChanged();
-                ValidateStuID();  // Validate in real-time as the user types
+            set 
+            {
+                if (_Stu_ID != value)
+                {
+                    {
+                        _Stu_ID = value;
+                        OnPropertyChanged(nameof(Stu_ID));
+                        ValidateStuID();  // Validate in real-time as the user types
+                    }
+                }
             }
             
 
@@ -700,7 +825,7 @@ namespace RPISVR_Managements.ViewModel
         // Property that returns only the date part (DateTime) without the time
         public string Stu_BirthdayDateOnly
         {
-            get => SelectedDate?.ToString("dd/MM/yyyy") ?? "No Date Selected";  // .Date returns only the date part, stripping out time and offset
+            get => SelectedDate?.ToString("dd/MM/yyyy") ?? "No Date Selected"; 
         }
 
         //Stu_Gender
@@ -1159,8 +1284,7 @@ namespace RPISVR_Managements.ViewModel
                         OnPropertyChanged(nameof(IsStuImage_Yes));
                         OnPropertyChanged(nameof(Stu_Image_YesNo));  // Notify text update
                     }
-                    //_IsStuImage_Yes = value;
-                    //OnPropertyChanged(nameof(IsStuImage_Yes)); 
+                   
             }
         }
 
@@ -1225,7 +1349,7 @@ namespace RPISVR_Managements.ViewModel
         //String Stu_ImageDegree_Yes_No in Khmer
         public string Stu_ImageDegree_YesNo
         {
-            get => _Is_ImageDegree_YesNo ? "មានរូបថត" : "គ្មានរូបថត"; 
+            get => _Is_ImageDegree_YesNo ? "មាន" : "គ្មាន"; 
         }
 
         private BitmapImage _Stu_Image_Degree_Source;  // For displaying image in the UI
@@ -1277,7 +1401,7 @@ namespace RPISVR_Managements.ViewModel
         //String Stu_ImageDegree_Yes_No in Khmer
         public string Stu_ImageBirth_Cert_YesNo
         {
-            get => _Is_ImageBirth_Cert_YesNo ? "មានរូបថត" : "គ្មានរូបថត";
+            get => _Is_ImageBirth_Cert_YesNo ? "មាន" : "គ្មាន";
         }
 
         private BitmapImage _Stu_ImageBirth_Cert_Source;  // For displaying image in the UI
@@ -1330,7 +1454,7 @@ namespace RPISVR_Managements.ViewModel
         //String Stu_ImageIDNation_Yes_No in Khmer
         public string Stu_ImageIDNation_YesNo
         {
-            get => _Is_Stu_ImageIDNation_YesNo ? "មានរូបថត" : "គ្មានរូបថត";
+            get => _Is_Stu_ImageIDNation_YesNo ? "មាន" : "គ្មាន";
         }
 
         private BitmapImage _Stu_ImageIDNation_Source;  // For displaying image in the UI
@@ -1383,7 +1507,7 @@ namespace RPISVR_Managements.ViewModel
         //String Stu_Image_Poor_Yes_No in Khmer
         public string Stu_ImagePoor_Card_YesNo
         {
-            get => _Is_ImagePoor_Card_YesNo ? "មានរូបថត" : "គ្មានរូបថត";
+            get => _Is_ImagePoor_Card_YesNo ? "មាន" : "គ្មាន";
         }
 
         private BitmapImage _Stu_ImagePoor_Card_Source;  // For displaying image in the UI
@@ -1574,8 +1698,6 @@ namespace RPISVR_Managements.ViewModel
             }
         }
 
-        //Error Message Icon
-
         //Database Icon
         private ImageSource _ErrorImageSource;
         public ImageSource ErrorImageSource
@@ -1612,6 +1734,7 @@ namespace RPISVR_Managements.ViewModel
 
             Student_Info student_Info = new Student_Info
             {
+                ID=this.ID,
                 Stu_ID = this.Stu_ID,
                 Stu_FirstName_KH = this.Stu_FirstName_KH,
                 Stu_LastName_KH = this.Stu_LastName_KH,
@@ -1655,7 +1778,7 @@ namespace RPISVR_Managements.ViewModel
                 Stu_ImageBirth_Cert_Bytes = this.Stu_ImageBirth_Cert_Bytes,
                 Stu_ImageIDNation_YesNo = this.Stu_ImageIDNation_YesNo,
                 Stu_ImageIDNation_Bytes = this.Stu_ImageIDNation_Bytes,
-                Stu_ImagePoor_Card_YesNo = this.Stu_ImagePoor_Card_YesNo,
+                Stu_ImagePoor_Card_YesNo = this.Stu_ImagePoor_Card_YesNo, 
                 Stu_Image_Poor_Card_Bytes = this.Stu_Image_Poor_Card_Bytes,
                 Stu_Insert_by_ID = this.Stu_Insert_by_ID,
                 Stu_Insert_DateTime = this.Stu_Insert_DateTime,
@@ -1688,7 +1811,12 @@ namespace RPISVR_Managements.ViewModel
         //Method for Clear Text
         public void ClearStudentInfo()
         {
-            //Stu_ID = "";
+            _studentModel = new DatabaseConnection();
+            var (id, stu_ID) = _studentModel.Get_ID_and_Stu_ID();
+            Debug.WriteLine("New ID: " + ID);
+            Debug.WriteLine("New Stu_ID: " + stu_ID);
+            ID = id;
+            Stu_ID = stu_ID;
             Stu_FirstName_KH =string.Empty;
             Stu_LastName_KH = string.Empty;
             Stu_FirstName_EN = string.Empty;
@@ -2024,6 +2152,8 @@ namespace RPISVR_Managements.ViewModel
             Debug.WriteLine($"Stu_ImageBirth_Cert_YesNo:{Stu_ImageBirth_Cert_YesNo}");
             Debug.WriteLine($"Stu_ImageDNation_YesNo:{Stu_ImageIDNation_YesNo}");
             Debug.WriteLine($"Stu_ImagePoor_Card_YesNo:{Stu_ImagePoor_Card_YesNo}");
+            Debug.WriteLine($"Stu_ImagePoor_Card_Source:{Stu_ImagePoor_Card_Source}");
+            Debug.WriteLine($"Stu_Image_Poor_Card_Bytes:{Stu_Image_Poor_Card_Bytes}");
             Debug.WriteLine($"Stu_Image_Total_Big:{Stu_Image_Total_Big}");
             Debug.WriteLine($"Stu_Image_TotalSmall:{Stu_Image_TotalSmall}");
 
@@ -2031,11 +2161,10 @@ namespace RPISVR_Managements.ViewModel
             // If everything is valid
             SaveStudentInformationToDatabase();
             ClearStudentInfo();
+            LoadStudents();
             await Task.CompletedTask;
             
         }
-
-        
 
         // Example method to display error messages
         private Task ShowErrorMessageAsync(string message)
