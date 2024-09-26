@@ -13,7 +13,7 @@
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition x:Name="Text_Header" Height="Auto"/>
-            <RowDefinition x:Name="Information_Insert" Height="270"/>
+            <RowDefinition x:Name="Information_Insert" Height="280"/>
             <RowDefinition x:Name="All_Button" Height="Auto"/>
             <RowDefinition x:Name="Information_Show" Height="5*"/>
 
@@ -34,7 +34,8 @@
                                Header="ID សិស្សនិស្សិត" 
                                Style="{StaticResource Style_KH_TextBox}"
                                Text="{Binding Stu_ID, Mode=TwoWay}"
-                               BorderBrush="{Binding StuIDBorderBrush}"  />
+                               BorderBrush="{Binding StuIDBorderBrush}"
+                               IsReadOnly="True"/>
 
                         <TextBox x:Name="Stu_FirstName_KH" 
                                Header="គោត្តនាម" 
@@ -469,6 +470,7 @@
                         <ToggleSwitch x:Name="Stu_Image_YesNo"
                                     OffContent="គ្មានរូបថត"
                                     OnContent="មានរូបថត"
+                                    Header="រូបថតសិស្សនិស្សិត"
                                     Style="{StaticResource Stye_KH_ToggleSwitch}"
                                     RelativePanel.RightOf="Line_5"
                                     RelativePanel.Below="Stu_ChooseImage"
@@ -529,8 +531,9 @@
                         </Button>
 
                         <ToggleSwitch x:Name="Stu_ImageIDegree_YesNo"
-                                      OnContent="មានរូប"
-                                      OffContent="គ្មានរូប"
+                                      OnContent="មាន"
+                                      OffContent="គ្មាន"
+                                      Header="សញ្ញាបត្រ"
                                       IsOn="{Binding Is_ImageDegree_YesNo,Mode=TwoWay}"
                                       Style="{StaticResource Stye_KH_ToggleSwitch}"
                                       RelativePanel.RightOf="Line_7"
@@ -568,8 +571,9 @@
                         </Button>
 
                         <ToggleSwitch x:Name="Stu_ImageIBirth_Cert_YesNo"
-                                      OnContent="មានរូប"
-                                      OffContent="គ្មានរូប"
+                                      OnContent="មាន"
+                                      OffContent="គ្មាន"
+                                      Header="សំបុត្រកំណើត"
                                       IsOn="{Binding Is_ImageBirth_Cert_YesNo,Mode=TwoWay}"
                                       Style="{StaticResource Stye_KH_ToggleSwitch}"
                                       RelativePanel.RightOf="Line_8"
@@ -607,8 +611,9 @@
                             </Button.Content>
                         </Button>
                         <ToggleSwitch x:Name="Stu_ImageIDNation_YesNo"
-                                      OnContent="មានរូប"
-                                      OffContent="គ្មានរូប"
+                                      OnContent="មាន"
+                                      OffContent="គ្មាន"
+                                      Header="អត្តសញ្ញាណប័ណ្ណ"
                                       IsOn="{Binding Is_Stu_ImageIDNation_YesNo,Mode=TwoWay}"
                                       Style="{StaticResource Stye_KH_ToggleSwitch}"
                                       RelativePanel.RightOf="Line_9"
@@ -647,6 +652,7 @@
                         <ToggleSwitch x:Name="Stu_ImagePoor_Card_YesNo"
                                       OnContent="មានរូប"
                                       OffContent="គ្មានរូប"
+                                      Header="ប័ណ្ណក្រីក្រ"
                                       IsOn="{Binding Is_ImagePoor_Card_YesNo,Mode=TwoWay}"
                                       Style="{StaticResource Stye_KH_ToggleSwitch}"
                                       RelativePanel.RightOf="Line_10"
@@ -952,45 +958,139 @@
                     </StackPanel>
                 </ScrollView>
 
-                <ScrollView x:Name="Table_Infos" RelativePanel.RightOf="Search_Infos" VerticalScrollMode="Enabled">
-                    <StackPanel>
-                        <!--<controls:DataGrid>
-                            <controls:DataGrid.Columns>
-                                <controls:DataGridTextColumn x:Name="T_StuID" Header="ID សិស្សនិស្សិត"/>
-                                <controls:DataGridTextColumn x:Name="T_StuFirstName_KH" Header="គោត្តនាម"/>
-                                <controls:DataGridTextColumn x:Name="T_StuLastName_KH" Header="នាម"/>
-                                <controls:DataGridTextColumn x:Name="T_StuFirstName_EN" Header="ឡាតាំង (ត្រកូល)"/>
-                                <controls:DataGridTextColumn x:Name="T_StuLastName_EN" Header="ឡាតាំង (ឈ្មោះ)"/>
-                                <controls:DataGridTextColumn x:Name="T_StuGender" Header="ភេទ"/>
-                                <controls:DataGridTextColumn x:Name="T_StuBirthday" Header="ថ្ងៃខែឆ្នាំកំណើត"/>
-                                <controls:DataGridTextColumn x:Name="T_StuPhoneNumber" Header="លេខទូរស័ព្ទ"/>
-                                <controls:DataGridTextColumn x:Name="T_StuStudyLevel" Header="កម្រិតសិក្សា"/>
-                                <controls:DataGridTextColumn x:Name="T_StuSuject" Header="ជំនាញ"/>
-                                <controls:DataGridTextColumn x:Name="T_StuStudyTime" Header="វេនសិក្សា"/>
-                                <controls:DataGridTextColumn x:Name="T_StuStudyType" Header="ប្រភេទសិក្សា"/>
-                                <controls:DataGridTextColumn x:Name="T_StuStudyYear" Header="ឆ្នាំសិក្សា"/>
-                                <controls:DataGridTextColumn x:Name="T_StuStudyingYear" Header="ឆ្នាំទី"/>
-                                <controls:DataGridTextColumn x:Name="T_StuStateFamily" Header="ស្ថានភាពគ្រួសារ"/>
-                                <controls:DataGridTextColumn x:Name="T_StuNationalID" Header="លេខអត្តសញ្ញាណប័ណ្ណ"/>
-                                <controls:DataGridTextColumn x:Name="T_StuJob" Header="មុខរបរសិស្ស/និស្សិត"/>
-                                <controls:DataGridTextColumn x:Name="T_StuFromSchool" Header="មកពីសាលា/វិទ្យាល័យ"/>
-                                <controls:DataGridTextColumn x:Name="T_StuB_Pro" Header="ខេត្ត(កំណើត)"/>
-                                <controls:DataGridTextColumn x:Name="T_StuB_Dis" Header="ស្រុក(កំណើត)"/>
-                                <controls:DataGridTextColumn x:Name="T_StuB_Comm" Header="ឃុំ(កំណើត)"/>
-                                <controls:DataGridTextColumn x:Name="T_StuB_Vill" Header="ភូមិ(កំណើត)"/>
-                                <controls:DataGridTextColumn x:Name="T_StuL_Pro" Header="ខេត្ត(បច្ចុប្បន្ន)"/>
-                                <controls:DataGridTextColumn x:Name="T_StuL_Dis" Header="ស្រុក(បច្ចុប្បន្ន)"/>
-                                <controls:DataGridTextColumn x:Name="T_StuL_Comm" Header="ឃុំ(បច្ចុប្បន្ន)"/>
-                                <controls:DataGridTextColumn x:Name="T_StuL_Vill" Header="ភូមិ(បច្ចុប្បន្ន)"/>
-                                <controls:DataGridTextColumn x:Name="T_StuMother_Name" Header="ឈ្មោះម្ដាយ"/>
-                                <controls:DataGridTextColumn x:Name="T_StuMother_PhoneNumber" Header="លេខទូរស័ព្ទម្ដាយ"/>
-                                <controls:DataGridTextColumn x:Name="T_StuMother_Job" Header="មុខរបរម្ដាយ"/>
-                                <controls:DataGridTextColumn x:Name="T_StuFather_Name" Header="ឈ្មោះឳពុក"/>
-                                <controls:DataGridTextColumn x:Name="T_StuFather_PhoneNumber" Header="លេខទូរស័ព្ទឳពុក"/>
-                                <controls:DataGridTextColumn x:Name="T_StuFather_Job" Header="មុខរបរឳពុក"/>
+                <StackPanel x:Name="Table_Stu_Info_Header" RelativePanel.RightOf="Search_Infos" Orientation="Horizontal" >
+                    <TextBlock HorizontalAlignment="Left" Text="តារាងទិន្នន័យសិស្សនិស្សិត" Style="{StaticResource Font_KH_Title}" FontSize="16" FontWeight="Bold" Margin="0,10,0,10"/>
+                    <StackPanel HorizontalAlignment="Right" VerticalAlignment="Center" Orientation="Horizontal" Margin="40,0,0,0">
+                        <Button Command="{Binding PreviousPageCommand}" IsEnabled="{Binding CanGoPreviousPage}">
+                            <Button.Content>
+                                <ImageIcon Source="/Assets/Student_Info_Icon/icons8-double-left-96.png" Width="20" Height="20"/>
+                            </Button.Content>
+                        </Button>
+                        <TextBlock Text="{Binding CurrentPage}" Margin="5,5,0,0"/>
+                        <TextBlock Text="/" Margin="5,5,0,0"/>
+                        <TextBlock Text="{Binding TotalPages}" Margin="5,5,5,0"/>
+                        <Button Command="{Binding NextPageCommand}">
+                            <Button.Content>
+                                <ImageIcon Source="/Assets/Student_Info_Icon/icons8-double-right-96.png" Width="20" Height="20"/>
+                            </Button.Content>
+                        </Button>
 
-                            </controls:DataGrid.Columns>
-                        </controls:DataGrid>-->
+                    </StackPanel>
+                </StackPanel>
+                <ScrollView x:Name="Table_Infos" RelativePanel.RightOf="Search_Infos" RelativePanel.Below="Table_Stu_Info_Header" ContentOrientation="Horizontal" HorizontalScrollMode="Auto" HorizontalScrollBarVisibility="Visible" >
+                    <StackPanel>
+                        <!--Header-->
+                        <StackPanel Orientation="Horizontal" Spacing="10" Background="Green">
+                          
+                            <TextBlock Text="ID" Width="50" Style="{StaticResource Font_KH_Body}" FontWeight="Bold" Visibility="Collapsed"/>
+                            <TextBlock Text="លេខសម្គាល់" Width="80" Margin="15,0,0,0" Style="{StaticResource Font_KH_Body}" FontWeight="Bold"/>
+                            <TextBlock Text="គោត្តនាម" Width="50" Style="{StaticResource Font_KH_Body}" FontWeight="Bold"/>
+                            <TextBlock Text="នាម" Width="40" Style="{StaticResource Font_KH_Body}" FontWeight="Bold"/>
+                            <TextBlock Text="ត្រកូល(ឡាតាំង)" Width="100" Style="{StaticResource Font_KH_Body}" FontWeight="Bold"/>
+                            <TextBlock Text="ឈ្មោះ(ឡាតាំង)" Width="100" Style="{StaticResource Font_KH_Body}" FontWeight="Bold"/>
+                            <TextBlock Text="ភេទ" Width="40" Style="{StaticResource Font_KH_Body}" FontWeight="Bold"/>
+                            <TextBlock Text="ថ្ងៃខែឆ្នាំកំណើត" Width="90" Style="{StaticResource Font_KH_Body}" FontWeight="Bold"/>
+                            <TextBlock Text="ជំនាញ" Width="120" Style="{StaticResource Font_KH_Body}" FontWeight="Bold"/>
+                            <TextBlock Text="ឆ្នាំទី" Width="50" Style="{StaticResource Font_KH_Body}" FontWeight="Bold"/>
+                            <TextBlock Text="កម្រិតសិក្សា" Width="90" Style="{StaticResource Font_KH_Body}" FontWeight="Bold"/>
+                            <TextBlock Text="វេនសិក្សា" Width="100" Style="{StaticResource Font_KH_Body}" FontWeight="Bold"/>
+                            <TextBlock Text="ឆមាស" Width="80" Style="{StaticResource Font_KH_Body}" FontWeight="Bold"/>
+                            <TextBlock Text="ប្រភេទសិក្សា" Width="100" Style="{StaticResource Font_KH_Body}" FontWeight="Bold"/>
+                            <TextBlock Text="ស្ថានភាពគ្រួសារ" Width="90" Style="{StaticResource Font_KH_Body}" FontWeight="Bold"/>
+                            <TextBlock Text="លេខទូរស័ព្ទ (0)" Width="100" Style="{StaticResource Font_KH_Body}" FontWeight="Bold"/>
+                            <TextBlock Text="លេខអត្តសញ្ញាណប័ណ្ណ" Width="140" Style="{StaticResource Font_KH_Body}" FontWeight="Bold"/>
+                            <TextBlock Text="មកពីសាលា/វិទ្យាល័យ" Width="240" Style="{StaticResource Font_KH_Body}" FontWeight="Bold"/>
+                            <TextBlock Text="មុខរបរសិស្សនិស្សិត" Width="120" Style="{StaticResource Font_KH_Body}" FontWeight="Bold"/>
+                            <TextBlock Text="ភូមិកំណើត" Width="90" Style="{StaticResource Font_KH_Body}" FontWeight="Bold"/>
+                            <TextBlock Text="ឃុំ/សង្កាត់កំណើត" Width="120" Style="{StaticResource Font_KH_Body}" FontWeight="Bold"/>
+                            <TextBlock Text="ស្រុក/ខណ្ឌកំណើត" Width="120" Style="{StaticResource Font_KH_Body}" FontWeight="Bold"/>
+                            <TextBlock Text="រាជធានី/ខេត្តកំណើត" Width="120" Style="{StaticResource Font_KH_Body}" FontWeight="Bold"/>
+                            <TextBlock Text="ភូមិរស់នៅបច្ចុប្បន្ន" Width="110" Style="{StaticResource Font_KH_Body}" FontWeight="Bold"/>
+                            <TextBlock Text="ឃុំ/សង្កាត់រស់នៅបច្ចុប្បន្ន" Width="130" Style="{StaticResource Font_KH_Body}" FontWeight="Bold"/>
+                            <TextBlock Text="ស្រុក/ខណ្ឌរស់នៅបច្ចុប្បន្ន" Width="140" Style="{StaticResource Font_KH_Body}" FontWeight="Bold"/>
+                            <TextBlock Text="រាជធានី/ខេត្តរស់នៅបច្ចុប្បន្ន" Width="160" Style="{StaticResource Font_KH_Body}" FontWeight="Bold"/>
+                            <TextBlock Text="ឈ្មោះម្ដាយ" Width="100" Style="{StaticResource Font_KH_Body}" FontWeight="Bold"/>
+                            <TextBlock Text="មុខរបរម្ដាយ" Width="100" Style="{StaticResource Font_KH_Body}" FontWeight="Bold"/>
+                            <TextBlock Text="លេខទូរស័ព្ទម្ដាយ(0)" Width="120" Style="{StaticResource Font_KH_Body}" FontWeight="Bold"/>
+                            <TextBlock Text="ឈ្មោះឪពុក" Width="110" Style="{StaticResource Font_KH_Body}" FontWeight="Bold"/>
+                            <TextBlock Text="មុខរបរឪពុក" Width="110" Style="{StaticResource Font_KH_Body}" FontWeight="Bold"/>
+                            <TextBlock Text="លេខទូរស័ព្ទឪពុក(0)" Width="120" Style="{StaticResource Font_KH_Body}" FontWeight="Bold"/>
+                            <TextBlock Text="រូបថតសិស្សនិស្សិត" Width="180" Style="{StaticResource Font_KH_Body}" FontWeight="Bold"/>
+                            <TextBlock Text="ទិន្នន័យរូបសិស្សនិស្សិត" Width="200" Style="{StaticResource Font_KH_Body}" FontWeight="Bold"/>
+                            <TextBlock Text="ចំនួនរូបថតធំ(4x6)" Width="110" Style="{StaticResource Font_KH_Body}" FontWeight="Bold"/>
+                            <TextBlock Text="ចំនួនរូបថតតូច(3x4)" Width="120" Style="{StaticResource Font_KH_Body}" FontWeight="Bold"/>
+                            <TextBlock Text="សញ្ញាបត្រ" Width="130" Style="{StaticResource Font_KH_Body}" FontWeight="Bold"/>
+                            <TextBlock Text="ទិន្នន័យរូបសញ្ញាបត្រ" Width="210" Style="{StaticResource Font_KH_Body}" FontWeight="Bold"/>
+                            <TextBlock Text="សំបុត្រកំណើត" Width="190" Style="{StaticResource Font_KH_Body}" FontWeight="Bold"/>
+                            <TextBlock Text="ទិន្នន័យរូបសំបុត្រកំណើត" Width="190" Style="{StaticResource Font_KH_Body}" FontWeight="Bold"/>
+                            <TextBlock Text="អត្តសញ្ញាណប័ណ្ណ" Width="180" Style="{StaticResource Font_KH_Body}" FontWeight="Bold"/>
+                            <TextBlock Text="ទិន្នន័យរូបអត្តសញ្ញាណប័ណ្ណ" Width="210" Style="{StaticResource Font_KH_Body}" FontWeight="Bold"/>
+                            <TextBlock Text="ប័ណ្ណក្រីក្រ" Width="150" Style="{StaticResource Font_KH_Body}" FontWeight="Bold"/>
+                            <TextBlock Text="ទិន្នន័យរូបប័ណ្ណក្រីក្រ" Width="230" Style="{StaticResource Font_KH_Body}" FontWeight="Bold"/>
+                            <TextBlock Text="អ្នកបញ្ចូលទិន្នន័យ" Width="140" Style="{StaticResource Font_KH_Body}" FontWeight="Bold"/>
+                            <TextBlock Text="កាលបរិច្ឆេទបញ្ចូល" Width="130" Style="{StaticResource Font_KH_Body}" FontWeight="Bold"/>
+                            <TextBlock Text="អ្នកធ្វើបច្ចុប្បន្នភាពចុងក្រោយ" Width="160" Style="{StaticResource Font_KH_Body}" FontWeight="Bold"/>
+                            <TextBlock Text="កាលបរិច្ឆេទធ្វើបច្ចុប្បន្នភាពចុងក្រោយ" Width="200" Style="{StaticResource Font_KH_Body}" FontWeight="Bold"/>
+                        </StackPanel>
+                        <ListView ItemsSource="{Binding Students}" ScrollViewer.HorizontalScrollMode="Disabled" ScrollViewer.HorizontalScrollBarVisibility="Hidden" BorderBrush="Red" BorderThickness="3">
+                            <ListView.ItemTemplate>
+                                <DataTemplate>
+                                    <StackPanel Orientation="Horizontal" Spacing="10">
+                                        <!--<Image Source="{Binding ProfileImage}" Width="50" Height="50"/>-->
+                                        <TextBlock Text="{Binding ID}" Width="30" Visibility="Collapsed"/>
+                                        <TextBlock Text="{Binding Stu_ID}" Width="100"/>
+                                        <TextBlock Text="{Binding Stu_FirstName_KH}" Width="20" Style="{StaticResource Font_KH_Body}"/>
+                                        <TextBlock Text="{Binding Stu_LastName_KH}" Width="70" Style="{StaticResource Font_KH_Body}"/>
+                                        <TextBlock Text="{Binding Stu_FirstName_EN}" Width="90"/>
+                                        <TextBlock Text="{Binding Stu_LastName_EN}" Width="90"/>
+                                        <TextBlock Text="{Binding Stu_Gender}" Width="50" Style="{StaticResource Font_KH_Body}"/>
+                                        <TextBlock Text="{Binding Stu_BirthdayDateOnly}" Width="90"/>
+                                        <TextBlock Text="{Binding Stu_EducationSubjects}" Width="120" Style="{StaticResource Font_KH_Body}"/>
+                                        <TextBlock Text="{Binding Stu_StudyingTime}" Width="50"/>
+                                        <TextBlock Text="{Binding Stu_EducationLevels }" Width="70" Style="{StaticResource Font_KH_Body}"/>
+                                        <TextBlock Text="{Binding Stu_StudyTimeShift}" Width="120" Style="{StaticResource Font_KH_Body}"/>
+                                        <TextBlock Text="{Binding Stu_Semester}" Width="80"/>
+                                        <TextBlock Text="{Binding Stu_EducationType}" Width="120" Style="{StaticResource Font_KH_Body}"/>
+                                        <TextBlock Text="{Binding Stu_StateFamily }" Width="60" Style="{StaticResource Font_KH_Body}"/>
+                                        <TextBlock Text="{Binding Stu_PhoneNumber}" Width="120"/>
+                                        <TextBlock Text="{Binding Stu_NationalID}" Width="130"/>
+                                        <TextBlock Text="{Binding Stu_School}" Width="270" Style="{StaticResource Font_KH_Body}"/>
+                                        <TextBlock Text="{Binding Stu_Jobs}" Width="90"/>
+                                        <TextBlock Text="{Binding Stu_Birth_Village}" Width="90" Style="{StaticResource Font_KH_Body}"/>
+                                        <TextBlock Text="{Binding Stu_Birth_Commune}" Width="120" Style="{StaticResource Font_KH_Body}"/>
+                                        <TextBlock Text="{Binding Stu_Birth_Distric}" Width="120" Style="{StaticResource Font_KH_Body}"/>
+                                        <TextBlock Text="{Binding Stu_Birth_Province }" Width="130" Style="{StaticResource Font_KH_Body}"/>
+                                        <TextBlock Text="{Binding Stu_Live_Vill}" Width="130" Style="{StaticResource Font_KH_Body}"/>
+                                        <TextBlock Text="{Binding Stu_Live_Comm}" Width="120" Style="{StaticResource Font_KH_Body}"/>
+                                        <TextBlock Text="{Binding Stu_Live_Dis}" Width="140" Style="{StaticResource Font_KH_Body}"/>
+                                        <TextBlock Text="{Binding Stu_Live_Pro }" Width="130" Style="{StaticResource Font_KH_Body}"/>
+                                        <TextBlock Text="{Binding Stu_Mother_Name}" Width="110" Style="{StaticResource Font_KH_Body}"/>
+                                        <TextBlock Text="{Binding Stu_Mother_Job}" Width="100" Style="{StaticResource Font_KH_Body}"/>
+                                        <TextBlock Text="{Binding Stu_Mother_Phone }" Width="120" Style="{StaticResource Font_KH_Body}"/>
+                                        <TextBlock Text="{Binding Stu_Father_Name }" Width="110" Style="{StaticResource Font_KH_Body}"/>
+                                        <TextBlock Text="{Binding Stu_Father_Job}" Width="110" Style="{StaticResource Font_KH_Body}"/>
+                                        <TextBlock Text="{Binding Stu_Father_Phone}" Width="125" Style="{StaticResource Font_KH_Body}"/>
+                                        <TextBlock Text="{Binding Stu_Image_YesNo}" Width="110" Style="{StaticResource Font_KH_Body}"/>
+                                        <TextBlock Text="{Binding Stu_Image_Source}" Width="300" Style="{StaticResource Font_KH_Body}"/>
+                                        <TextBlock Text="{Binding Stu_Image_Total_Big}" Width="120" Style="{StaticResource Font_KH_Body}"/>
+                                        <TextBlock Text="{Binding Stu_Image_TotalSmall}" Width="70" Style="{StaticResource Font_KH_Body}"/>
+                                        <TextBlock Text="{Binding Stu_Images_Degree_Yes_No}" Width="50" Style="{StaticResource Font_KH_Body}"/>
+                                        <TextBlock Text="{Binding Stu_Image_Degree_Source}" Width="300" Style="{StaticResource Font_KH_Body}"/>
+                                        <TextBlock Text="{Binding Stu_ImageBirth_Cert_YesNo}" Width="90" Style="{StaticResource Font_KH_Body}"/>
+                                        <TextBlock Text="{Binding Stu_ImageBirth_Cert_Source}" Width="300" Style="{StaticResource Font_KH_Body}"/>
+                                        <TextBlock Text="{Binding Stu_ImageIDNation_YesNo}" Width="80" Style="{StaticResource Font_KH_Body}"/>
+                                        <TextBlock Text="{Binding Stu_ImageIDNation_Source}" Width="300" Style="{StaticResource Font_KH_Body}"/>
+                                        <TextBlock Text="{Binding Stu_ImagePoor_Card_YesNo}" Width="80" Style="{StaticResource Font_KH_Body}"/>
+                                        <TextBlock Text="{Binding Stu_ImagePoor_Card_Source}" Width="300" Style="{StaticResource Font_KH_Body}"/>
+                                        <TextBlock Text="{Binding Stu_Insert_by_ID}" Width="100" Style="{StaticResource Font_KH_Body}"/>
+                                        <TextBlock Text="{Binding Stu_Insert_DateTime}" Width="200" Style="{StaticResource Font_KH_Body}"/>
+                                        <TextBlock Text="{Binding Stu_Update_By_ID}" Width="140" Style="{StaticResource Font_KH_Body}"/>
+                                        <TextBlock Text="{Binding Stu_Update_DateTime}" Width="200" Style="{StaticResource Font_KH_Body}"/>
+                                    </StackPanel>
+
+                                </DataTemplate>
+                            </ListView.ItemTemplate>
+                        </ListView>
                     </StackPanel>
                 </ScrollView>
             </RelativePanel>
