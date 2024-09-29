@@ -17,6 +17,7 @@ namespace RPISVR_Managements.Model
         public string Stu_LastName_EN { get; set; }
         public string Stu_Gender { get; set; }
         public string Stu_StateFamily { get; set; }
+        //public DateTime? Stu_BirthdayDateOnly { get; set; }  // Nullable DateTime
         public string Stu_BirthdayDateOnly { get; set; } 
         public string Stu_EducationLevels { get; set; }
         public string Stu_EducationSubjects { get; set; }
