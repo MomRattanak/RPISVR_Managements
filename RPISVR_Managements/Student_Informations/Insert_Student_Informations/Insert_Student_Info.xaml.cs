@@ -22,6 +22,7 @@ using WinRT.Interop;
 using System.ComponentModel;
 using Microsoft.UI.Text;
 using Microsoft.UI;
+using Windows.Storage.Streams;
 
 
 
@@ -190,7 +191,8 @@ namespace RPISVR_Managements.Student_Informations.Insert_Student_Informations
         private async Task<(BitmapImage, byte[])> Choose_Image_Stu()
         {
             FileOpenPicker openPicker = new FileOpenPicker();
-
+            openPicker.ViewMode = PickerViewMode.Thumbnail;
+            openPicker.SuggestedStartLocation = PickerLocationId.PicturesLibrary;
             // Get the window handle from the Page's parent window
             var hwnd = GetWindowHandle();  // Use the helper method to get the window handle
 
@@ -206,27 +208,27 @@ namespace RPISVR_Managements.Student_Informations.Insert_Student_Informations
             StorageFile selectedFile = await openPicker.PickSingleFileAsync();
             if (selectedFile != null)
             {
-                // Open the file and return the BitmapImage
-                using (var stream = await selectedFile.OpenAsync(Windows.Storage.FileAccessMode.Read))
+                // Open the file and return the BitmapImage 
+                using (IRandomAccessStream stream = await selectedFile.OpenAsync(FileAccessMode.Read))
                 {
+                    // Create a BitmapImage for UI display
                     BitmapImage bitmapImage = new BitmapImage();
                     await bitmapImage.SetSourceAsync(stream);
 
-                    //Convert Image to byte array
+                    // Reset the stream position to 0 to read it as a byte array
+                    stream.Seek(0);
+
+                    // Read the stream as a byte array
                     using (var memoryStream = new MemoryStream())
                     {
-                        await stream.AsStreamForRead().CopyToAsync(memoryStream);
-                        byte[] imageBytes = memoryStream.ToArray();
+                        await stream.AsStreamForRead().CopyToAsync(memoryStream); // Copy the stream into the memory stream
+                        byte[] imageBytes = memoryStream.ToArray();  // Convert memory stream to byte array
 
-                        // Return both the BitmapImage and the byte array
-                        return (bitmapImage, imageBytes);
+                        return (bitmapImage, imageBytes); // Return both BitmapImage and byte array
                     }
-                    //return bitmapImage;
                 }
             }
-
-            // Return null if no image is selected
-            return (null, null);
+            return (null, null);            
         }
         //btn_chooseimage_stu
         private async void btn_chooseimage_stu(object sender, RoutedEventArgs e)
@@ -234,15 +236,17 @@ namespace RPISVR_Managements.Student_Informations.Insert_Student_Informations
             var (image, imageBytes) = await Choose_Image_Stu();
             if (image != null && imageBytes != null)
             {
+                // Debugging: Check the byte array length
+                Debug.WriteLine($"Stu_Image bytes length: {imageBytes.Length}");
                 // Update the ViewModel with the selected image and byte array
                 var viewModel = this.DataContext as StudentViewModel;
                 if (viewModel != null)
                 {
                     viewModel.Stu_Image_Source = image;       // Set the image for UI display
                     viewModel.ProfileImageBytes = imageBytes; // Set the byte array for storing
+                    Stu_ShowImage.Source = image;  // Optionally, display it directly in the UI
                 }
-
-                Stu_ShowImage.Source = image;  // Optionally, display it directly in the UI
+              
             }
 
         }
@@ -253,15 +257,17 @@ namespace RPISVR_Managements.Student_Informations.Insert_Student_Informations
             var (image, imageBytes) = await Choose_Image_Stu();
             if (image != null && imageBytes != null)
             {
-                // Update the ViewModel with the selected image and byte array
+                // Debugging: Check the byte array length
+                Debug.WriteLine($"ImageIDNation bytes length: {imageBytes.Length}");
                 var viewModel = this.DataContext as StudentViewModel;
                 if (viewModel != null)
                 {
                     viewModel.Stu_ImageIDNation_Source = image;       // Set the image for UI display
                     viewModel.Stu_ImageIDNation_Bytes = imageBytes; // Set the byte array for storing
+                    Stu_ShowImageIDNation.Source = image; //Display it directly in the UI
                 }
 
-                Stu_ShowImageIDNation.Source = image; //Display it directly in the UI
+              
             }
         }
 
@@ -276,16 +282,18 @@ namespace RPISVR_Managements.Student_Informations.Insert_Student_Informations
             var (image, imageBytes) = await Choose_Image_Stu();
             if (image != null && imageBytes != null)
             {
+                Debug.WriteLine($"Image_Degree bytes length: {imageBytes.Length}");
                 // Update the ViewModel with the selected image and byte array
                 var viewModel = this.DataContext as StudentViewModel;
                 if (viewModel != null)
                 {
                     viewModel.Stu_Image_Degree_Source = image;       // Set the image for UI display
                     viewModel.Stu_Image_Degree_Bytes = imageBytes; // Set the byte array for storing
-                   
+                    Stu_ShowImageDegree.Source = image; //Display it directly in the UI
+
                 }
 
-                Stu_ShowImageDegree.Source = image; //Display it directly in the UI
+               
             }
             
                 
@@ -297,15 +305,17 @@ namespace RPISVR_Managements.Student_Informations.Insert_Student_Informations
             var (image, imageBytes) = await Choose_Image_Stu();
             if (image != null && imageBytes != null)
             {
+                Debug.WriteLine($"Image_Birth_certificate bytes length: {imageBytes.Length}");
                 // Update the ViewModel with the selected image and byte array
                 var viewModel = this.DataContext as StudentViewModel;
                 if (viewModel != null)
                 {
                     viewModel.Stu_ImageBirth_Cert_Source = image;       // Set the image for UI display
                     viewModel.Stu_ImageBirth_Cert_Bytes = imageBytes; // Set the byte array for storing
+                    Stu_ShowImage_Birth_Certifacate.Source = image; //Display it directly in the UI
                 }
 
-                Stu_ShowImage_Birth_Certifacate.Source = image; //Display it directly in the UI
+               
             }
 
             
@@ -317,19 +327,16 @@ namespace RPISVR_Managements.Student_Informations.Insert_Student_Informations
             var (image, imageBytes) = await Choose_Image_Stu();
             if (image != null && imageBytes != null)
             {
+                Debug.WriteLine($"Image_Poor_card bytes length: {imageBytes.Length}");
                 // Update the ViewModel with the selected image and byte array
                 var viewModel = this.DataContext as StudentViewModel;
                 if (viewModel != null)
                 {
                     viewModel.Stu_ImagePoor_Card_Source = image;       // Set the image for UI display
                     viewModel.Stu_Image_Poor_Card_Bytes = imageBytes; // Set the byte array for storing
-                }
-
-                Stu_ShowImage_Poor_card.Source = image; //Display it directly in the UI
-            }
-
-           
-            
+                    Stu_ShowImage_Poor_card.Source = image; //Display it directly in the UI
+                }             
+            }      
         }
 
         private void Test_DialogFont(object sender, RoutedEventArgs e)

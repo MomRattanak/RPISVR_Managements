@@ -20,6 +20,10 @@ using WinRT.Interop;
 using RPISVR_Managements.Model;
 using Org.BouncyCastle.Tls;
 using System.Collections.ObjectModel;
+using MySqlX.XDevAPI.Relational;
+using System.ComponentModel.DataAnnotations;
+using Windows.Storage.Streams;
+using static System.Net.Mime.MediaTypeNames;
 
 
 namespace RPISVR_Managements.ViewModel
@@ -39,19 +43,27 @@ namespace RPISVR_Managements.ViewModel
 
         public ICommand PreviousPageCommand { get; }
         public ICommand NextPageCommand { get; }
+        // Command to handle the form submission
+        public ICommand SubmitCommand { get; }
+        public ICommand ClearCommand { get; }
 
         public StudentViewModel()
         {
           
             SubmitCommand = new RelayCommand(async () => await SubmitAsync());
+            ClearCommand = new RelayCommand(async () => await ClearAsync());
             _dbConnection = new DatabaseConnection();
+
 
             Students = new ObservableCollection<Student_Info>();
             Debug.WriteLine("Students loaded: " + Students.Count);
 
-
+            //Command for Previouse,Back Button
             PreviousPageCommand = new RelayCommand(PreviousPage, CanGoPreviousPage);
             NextPageCommand = new RelayCommand(NextPage, CanGoNextPage);
+
+            //
+            IsUpdateEnabled = false;
 
             // Populate Days and Years
             for (int i = 1; i <= 31; i++) Days.Add(i); // Days 1-31
@@ -94,6 +106,7 @@ namespace RPISVR_Managements.ViewModel
                 OnPropertyChanged(nameof(Students));  // Notify the UI when the Students collection changes
             }
         }
+
         // Method to load students from the database, including images
         private void LoadStudents()
         {
@@ -101,13 +114,14 @@ namespace RPISVR_Managements.ViewModel
             // Clear the existing list to prepare for the new page data
             Students.Clear();
             Debug.WriteLine("Loading students for page: " + CurrentPage);
+            
             // Iterate over the studentsList returned by the database and add them to the ObservableCollection
             foreach (var student in studentsList)
-            {
-                Students.Add(student);
+            {              
+                Students.Add(student); 
             }
             Students = new ObservableCollection<Student_Info>(studentsList);
-
+            
             // Raise CanExecuteChanged to update button states
             (NextPageCommand as RelayCommand)?.RaiseCanExecuteChanged();
             (PreviousPageCommand as RelayCommand)?.RaiseCanExecuteChanged();
@@ -730,7 +744,7 @@ namespace RPISVR_Managements.ViewModel
                     {
                         _Stu_ID = value;
                         OnPropertyChanged(nameof(Stu_ID));
-                        ValidateStuID();  // Validate in real-time as the user types
+                        ValidateStuID(); 
                     }
                 }
             }
@@ -743,12 +757,13 @@ namespace RPISVR_Managements.ViewModel
         public string Stu_FirstName_KH
         {
             get => _Stu_FirstName_KH;
-            set 
-            { 
+            set
+            {
                 _Stu_FirstName_KH = value;
-                OnPropertyChanged(); 
-                ValidateStu_FirstName_KH(); 
+                OnPropertyChanged();
+                ValidateStu_FirstName_KH();
             }
+
         }
 
 
@@ -757,12 +772,13 @@ namespace RPISVR_Managements.ViewModel
         public string Stu_LastName_KH
         {
             get => _Stu_LastName_KH;
-            set 
-            { _Stu_LastName_KH = value;
+            set
+            {
+                _Stu_LastName_KH = value;
                 OnPropertyChanged();
                 ValidateStu_LastName_KH();
-
             }
+
         }
 
         //Stu_FirstName_EN
@@ -878,7 +894,7 @@ namespace RPISVR_Managements.ViewModel
                 if(_Stu_EducationLevels != value)
                 {
                     _Stu_EducationLevels = value;
-                    OnPropertyChanged(nameof(_Stu_EducationLevels));
+                    OnPropertyChanged(nameof(Stu_EducationLevels));
                     ValidateStu_EducationLevels();
                 }
             }
@@ -894,7 +910,7 @@ namespace RPISVR_Managements.ViewModel
                 if(_Stu_EducationSubjects!=value)
                 {
                     _Stu_EducationSubjects = value;
-                    OnPropertyChanged(nameof(_Stu_EducationSubjects));
+                    OnPropertyChanged(nameof(Stu_EducationSubjects));
                     ValidateStu_EducationSubjects();
                 }
             }
@@ -1304,7 +1320,7 @@ namespace RPISVR_Managements.ViewModel
             set
             {
                 _profileImageSource = value;
-                OnPropertyChanged();
+                OnPropertyChanged(nameof(Stu_Image_Source));        
             }
         }
 
@@ -1315,7 +1331,18 @@ namespace RPISVR_Managements.ViewModel
             set
             {
                 _profileImageBytes = value;
-                OnPropertyChanged();
+                OnPropertyChanged(nameof(ProfileImageBytes));
+
+                // Debug: Print the length of the byte array to confirm it has valid data
+                if (_profileImageBytes != null)
+                {
+                    Debug.WriteLine($"ProfileImageBytes length: {_profileImageBytes.Length}");
+                }
+                else
+                {
+                    Debug.WriteLine("ProfileImageBytes is null");
+                }
+
             }
         }
 
@@ -1359,8 +1386,10 @@ namespace RPISVR_Managements.ViewModel
             set
             {
                 _Stu_Image_Degree_Source = value;
-                OnPropertyChanged();
+                OnPropertyChanged(nameof(Stu_Image_Degree_Source));
+
             }
+            
         }
 
         private byte[] _Stu_Image_Degree_Bytes;  // For storing image as byte array
@@ -1369,8 +1398,19 @@ namespace RPISVR_Managements.ViewModel
             get => _Stu_Image_Degree_Bytes;
             set
             {
+
                 _Stu_Image_Degree_Bytes = value;
-                OnPropertyChanged();
+                OnPropertyChanged(nameof(Stu_Image_Degree_Bytes));
+
+                // Debug: Print the length of the byte array to confirm it has valid data
+                if (_Stu_Image_Degree_Bytes != null)
+                {
+                    Debug.WriteLine($"Stu_Image_Degree_Bytes length: {_Stu_Image_Degree_Bytes.Length}");
+                }
+                else
+                {
+                    Debug.WriteLine("Stu_Image_Degree_Bytes is null");
+                }
             }
         }
 
@@ -1422,7 +1462,17 @@ namespace RPISVR_Managements.ViewModel
             set
             {
                 _Stu_ImageBirth_Cert_Bytes = value;
-                OnPropertyChanged();
+                OnPropertyChanged(nameof(Stu_ImageBirth_Cert_Bytes));
+
+                // Debug: Print the length of the byte array to confirm it has valid data
+                if (_Stu_ImageBirth_Cert_Bytes != null)
+                {
+                    Debug.WriteLine($"Stu_ImageBirth_Cert_Bytes length: {_Stu_ImageBirth_Cert_Bytes.Length}");
+                }
+                else
+                {
+                    Debug.WriteLine("Stu_ImageBirth_Cert_Bytes is null");
+                }
             }
         }
 
@@ -1475,7 +1525,17 @@ namespace RPISVR_Managements.ViewModel
             set
             {
                 _Stu_ImageIDNation_Bytes = value;
-                OnPropertyChanged();
+                OnPropertyChanged(nameof(Stu_ImageIDNation_Bytes));
+
+                // Debug: Print the length of the byte array to confirm it has valid data
+                if (_Stu_ImageIDNation_Bytes != null)
+                {
+                    Debug.WriteLine($"Stu_ImageIDNation_Bytes length: {_Stu_ImageIDNation_Bytes.Length}");
+                }
+                else
+                {
+                    Debug.WriteLine("Stu_ImageIDNation_Bytes is null");
+                }
             }
         }
 
@@ -1499,8 +1559,7 @@ namespace RPISVR_Managements.ViewModel
                     }
                     OnPropertyChanged(nameof(Is_ImagePoor_Card_YesNo));
                     OnPropertyChanged(nameof(Stu_ImagePoor_Card_Source));  // Notify text update 
-                    //_Is_ImagePoor_Card_YesNo = value;
-                    //OnPropertyChanged(nameof(Is_ImagePoor_Card_YesNo));
+                    
                 }
             }
         }
@@ -1528,7 +1587,17 @@ namespace RPISVR_Managements.ViewModel
             set
             {
                 _Stu_Image_Poor_Card_Bytes = value;
-                OnPropertyChanged();
+                OnPropertyChanged(nameof(Stu_Image_Poor_Card_Bytes));
+
+                // Debug: Print the length of the byte array to confirm it has valid data
+                if (_Stu_Image_Poor_Card_Bytes != null)
+                {
+                    Debug.WriteLine($"Stu_Image_Poor_Card_Bytes length: {_Stu_Image_Poor_Card_Bytes.Length}");
+                }
+                else
+                {
+                    Debug.WriteLine("Stu_Image_Poor_Card_Bytes is null");
+                }
             }
         }
 
@@ -1710,9 +1779,6 @@ namespace RPISVR_Managements.ViewModel
             }
         }
 
-        // Command to handle the form submission
-        public ICommand SubmitCommand { get; }
-
         //Update Color
         private void UpdateMessageColor()
         {
@@ -1731,80 +1797,169 @@ namespace RPISVR_Managements.ViewModel
         public void SaveStudentInformationToDatabase()
         {
             DatabaseConnection dbConnection = new DatabaseConnection();
-
-            Student_Info student_Info = new Student_Info
+            var UpdateStudent = Students.FirstOrDefault(s => s.Stu_ID == Stu_ID);
+            if (UpdateStudent != null)
             {
-                ID=this.ID,
-                Stu_ID = this.Stu_ID,
-                Stu_FirstName_KH = this.Stu_FirstName_KH,
-                Stu_LastName_KH = this.Stu_LastName_KH,
-                Stu_FirstName_EN = this.Stu_FirstName_EN,
-                Stu_LastName_EN = this.Stu_LastName_EN,
-                Stu_Gender = this.Stu_Gender,
-                Stu_StateFamily = this.Stu_StateFamily,
-                Stu_BirthdayDateOnly = this.Stu_BirthdayDateOnly,
-                Stu_EducationLevels = this.Stu_EducationLevels,
-                Stu_EducationSubjects = this.Stu_EducationSubjects,
-                Stu_StudyTimeShift = this.Stu_StudyTimeShift,
-                Stu_PhoneNumber = this.Stu_PhoneNumber,
-                Stu_EducationType = this.Stu_EducationType,
-                Stu_NationalID = this.Stu_NationalID,
-                Stu_StudyingTime = this.Stu_StudyingTime,
-                Stu_Birth_Province = this.Stu_Birth_Province,
-                Stu_Birth_Distric = this.Stu_Birth_Distric,
-                Stu_Birth_Commune = this.Stu_Birth_Commune,
-                Stu_Birth_Village = this.Stu_Birth_Village,
-                Stu_Live_Pro = this.Stu_Live_Pro,
-                Stu_Live_Dis = this.Stu_Live_Dis,
-                Stu_Live_Comm = this.Stu_Live_Comm,
-                Stu_Live_Vill = this.Stu_Live_Vill,
-                Stu_Jobs = this.Stu_Jobs,
-                Stu_School = this.Stu_School,
-                Stu_StudyYear = this.Stu_StudyYear,
-                Stu_Semester = this.Stu_Semester,
-                Stu_Mother_Name = this.Stu_Mother_Name,
-                Stu_Mother_Phone = this.Stu_Mother_Phone,
-                Stu_Mother_Job = this.Stu_Mother_Job,
-                Stu_Father_Name = this.Stu_Father_Name,
-                Stu_Father_Phone = this.Stu_Father_Phone,
-                Stu_Father_Job = this.Stu_Father_Job,
-                Stu_Image_YesNo = this.Stu_Image_YesNo,
-                ProfileImageBytes = this.ProfileImageBytes,
-                Stu_Image_Total_Big = this.Stu_Image_Total_Big,
-                Stu_Image_TotalSmall = this.Stu_Image_TotalSmall,
-                Stu_Images_Degree_Yes_No = this.Stu_ImageDegree_YesNo,
-                Stu_Image_Degree_Bytes = this.Stu_Image_Degree_Bytes,
-                Stu_ImageBirth_Cert_YesNo = this.Stu_ImageBirth_Cert_YesNo,
-                Stu_ImageBirth_Cert_Bytes = this.Stu_ImageBirth_Cert_Bytes,
-                Stu_ImageIDNation_YesNo = this.Stu_ImageIDNation_YesNo,
-                Stu_ImageIDNation_Bytes = this.Stu_ImageIDNation_Bytes,
-                Stu_ImagePoor_Card_YesNo = this.Stu_ImagePoor_Card_YesNo, 
-                Stu_Image_Poor_Card_Bytes = this.Stu_Image_Poor_Card_Bytes,
-                Stu_Insert_by_ID = this.Stu_Insert_by_ID,
-                Stu_Insert_DateTime = this.Stu_Insert_DateTime,
-                Stu_Insert_Info = this.Stu_Insert_Info,
-                Stu_Update_By_ID = this.Stu_Update_By_ID,
-                Stu_Update_DateTime = this.Stu_Update_DateTime,
-                Stu_Update_Info = this.Stu_Update_Info,
-                Stu_Delete_By_ID = this.Stu_Delete_By_ID,
-                Stu_Delete_DateTime = this.Stu_Delete_DateTime,
-                Stu_Delete_Info = this.Stu_Delete_Info,
-            };
-            bool success = dbConnection.Insert_Student_Information(student_Info);
+                UpdateStudent.ID = ID;
+                UpdateStudent.Stu_ID = Stu_ID;
+                UpdateStudent.Stu_FirstName_KH = Stu_FirstName_KH;
+                UpdateStudent.Stu_LastName_KH = Stu_LastName_KH;
+                UpdateStudent.Stu_FirstName_EN = Stu_FirstName_EN;
+                UpdateStudent.Stu_LastName_EN = Stu_LastName_EN;
+                UpdateStudent.Stu_Gender = Stu_Gender;
+                UpdateStudent.Stu_StateFamily = Stu_StateFamily;
+                UpdateStudent.Stu_BirthdayDateOnly = Stu_BirthdayDateOnly;
+                UpdateStudent.Stu_EducationLevels = Stu_EducationLevels;
+                UpdateStudent.Stu_EducationSubjects = Stu_EducationSubjects;
+                UpdateStudent.Stu_StudyTimeShift = Stu_StudyTimeShift;
+                UpdateStudent.Stu_PhoneNumber = Stu_PhoneNumber;
+                UpdateStudent.Stu_EducationType = Stu_EducationType;
+                UpdateStudent.Stu_NationalID = Stu_NationalID;
+                UpdateStudent.Stu_StudyingTime = Stu_StudyingTime;
+                UpdateStudent.Stu_Birth_Province = Stu_Birth_Province;
+                UpdateStudent.Stu_Birth_Distric = Stu_Birth_Distric;
+                UpdateStudent.Stu_Birth_Commune = Stu_Birth_Commune;
+                UpdateStudent.Stu_Birth_Village = Stu_Birth_Village;
+                UpdateStudent.Stu_Live_Pro = Stu_Live_Pro;
+                UpdateStudent.Stu_Live_Dis = Stu_Live_Dis;
+                UpdateStudent.Stu_Live_Comm = Stu_Live_Comm;
+                UpdateStudent.Stu_Live_Vill = Stu_Live_Vill;
+                UpdateStudent.Stu_Jobs = Stu_Jobs;
+                UpdateStudent.Stu_School = Stu_School;
+                UpdateStudent.Stu_StudyYear = Stu_StudyYear;
+                UpdateStudent.Stu_Semester = Stu_Semester;
+                UpdateStudent.Stu_Mother_Name = Stu_Mother_Name;
+                UpdateStudent.Stu_Mother_Phone = Stu_Mother_Phone;
+                UpdateStudent.Stu_Mother_Job = Stu_Mother_Job;
+                UpdateStudent.Stu_Father_Name = Stu_Father_Name;
+                UpdateStudent.Stu_Father_Phone = Stu_Father_Phone;
+                UpdateStudent.Stu_Father_Job = Stu_Father_Job;
+                UpdateStudent.Stu_Image_YesNo = Stu_Image_YesNo;
+                UpdateStudent.ProfileImageBytes = ProfileImageBytes;
+                UpdateStudent.Stu_Image_Total_Big = Stu_Image_Total_Big;
+                UpdateStudent.Stu_Image_TotalSmall = Stu_Image_TotalSmall;
+                UpdateStudent.Stu_Images_Degree_Yes_No = Stu_ImageDegree_YesNo;
+                UpdateStudent.Stu_Image_Degree_Bytes = Stu_Image_Degree_Bytes;
+                UpdateStudent.Stu_ImageBirth_Cert_YesNo = Stu_ImageBirth_Cert_YesNo;
+                UpdateStudent.Stu_ImageBirth_Cert_Bytes = Stu_ImageBirth_Cert_Bytes;
+                UpdateStudent.Stu_ImageIDNation_YesNo = Stu_ImageIDNation_YesNo;
+                UpdateStudent.Stu_ImageIDNation_Bytes = Stu_ImageIDNation_Bytes;
+                UpdateStudent.Stu_ImagePoor_Card_YesNo = Stu_ImagePoor_Card_YesNo;
+                UpdateStudent.Stu_Image_Poor_Card_Bytes = Stu_Image_Poor_Card_Bytes;
+                UpdateStudent.Stu_Insert_by_ID = Stu_Insert_by_ID;
+                //UpdateStudent.Stu_Insert_DateTime = Stu_Insert_DateTime;
+                //UpdateStudent.Stu_Insert_Info = Stu_Insert_Info;
+                UpdateStudent.Stu_Update_By_ID = Stu_Update_By_ID;
+                UpdateStudent.Stu_Update_DateTime = Stu_Update_DateTime;
+                UpdateStudent.Stu_Update_Info = Stu_Update_Info;
+                UpdateStudent.Stu_Delete_By_ID = Stu_Delete_By_ID;
+                UpdateStudent.Stu_Delete_DateTime = Stu_Delete_DateTime;
+                UpdateStudent.Stu_Delete_Info = Stu_Delete_Info;
 
-            if(success)
-            {
-                
-                ErrorMessage = "លេខសម្ភាល់ " + Stu_ID + " បានរក្សាទុកជោគជ័យ !";
-                ErrorImageSource = new BitmapImage(new Uri("ms-appx:///Assets/icons8-check-96.png"));
-                MessageColor = new SolidColorBrush(Colors.Green);
-               
+                Debug.WriteLine("Update Mode");
+
+                bool success = dbConnection.Update_Student_Information(UpdateStudent);
+
+                if (success)
+                {
+
+                    ErrorMessage = "លេខសម្ភាល់ " + Stu_ID + " បានធ្វើបច្ចុប្បន្នភាពជោគជ័យ !";
+                    ErrorImageSource = new BitmapImage(new Uri("ms-appx:///Assets/icons8-check-96.png"));
+                    MessageColor = new SolidColorBrush(Colors.Green);
+
+                }
+                else
+                {
+                    ErrorMessage = "លេខសម្ភាល់ " + Stu_ID + " ធ្វើបច្ចុប្បន្នភាពបរាជ័យ !";
+                    ErrorImageSource = new BitmapImage(new Uri("ms-appx:///Assets/icons8-fail-96.png"));
+                    MessageColor = new SolidColorBrush(Colors.Red);
+                }
             }
             else
             {
-                ErrorMessage = "លេខសម្ភាល់ "+Stu_ID + " រក្សាទុកបរាជ៏យ !";
-                ErrorImageSource = new BitmapImage(new Uri("ms-appx:///Assets/icons8-fail-96.png"));
-                MessageColor = new SolidColorBrush(Colors.Red);
+                Debug.WriteLine("Insert Mode");
+                // Debug: Check if ProfileImageBytes has valid data
+                if (ProfileImageBytes != null && ProfileImageBytes.Length > 0)
+                {
+                    Debug.WriteLine($"Inserting student image with byte array length: {ProfileImageBytes.Length}");
+
+                };
+                Student_Info student_Info = new Student_Info
+                {
+                    ID = this.ID,
+                    Stu_ID = this.Stu_ID,
+                    Stu_FirstName_KH = this.Stu_FirstName_KH,
+                    Stu_LastName_KH = this.Stu_LastName_KH,
+                    Stu_FirstName_EN = this.Stu_FirstName_EN,
+                    Stu_LastName_EN = this.Stu_LastName_EN,
+                    Stu_Gender = this.Stu_Gender,
+                    Stu_StateFamily = this.Stu_StateFamily,
+                    Stu_BirthdayDateOnly = this.Stu_BirthdayDateOnly,
+                    Stu_EducationLevels = this.Stu_EducationLevels,
+                    Stu_EducationSubjects = this.Stu_EducationSubjects,
+                    Stu_StudyTimeShift = this.Stu_StudyTimeShift,
+                    Stu_PhoneNumber = this.Stu_PhoneNumber,
+                    Stu_EducationType = this.Stu_EducationType,
+                    Stu_NationalID = this.Stu_NationalID,
+                    Stu_StudyingTime = this.Stu_StudyingTime,
+                    Stu_Birth_Province = this.Stu_Birth_Province,
+                    Stu_Birth_Distric = this.Stu_Birth_Distric,
+                    Stu_Birth_Commune = this.Stu_Birth_Commune,
+                    Stu_Birth_Village = this.Stu_Birth_Village,
+                    Stu_Live_Pro = this.Stu_Live_Pro,
+                    Stu_Live_Dis = this.Stu_Live_Dis,
+                    Stu_Live_Comm = this.Stu_Live_Comm,
+                    Stu_Live_Vill = this.Stu_Live_Vill,
+                    Stu_Jobs = this.Stu_Jobs,
+                    Stu_School = this.Stu_School,
+                    Stu_StudyYear = this.Stu_StudyYear,
+                    Stu_Semester = this.Stu_Semester,
+                    Stu_Mother_Name = this.Stu_Mother_Name,
+                    Stu_Mother_Phone = this.Stu_Mother_Phone,
+                    Stu_Mother_Job = this.Stu_Mother_Job,
+                    Stu_Father_Name = this.Stu_Father_Name,
+                    Stu_Father_Phone = this.Stu_Father_Phone,
+                    Stu_Father_Job = this.Stu_Father_Job,
+                    Stu_Image_YesNo = this.Stu_Image_YesNo,
+                    ProfileImageBytes = this.ProfileImageBytes,
+                    Stu_Image_Total_Big = this.Stu_Image_Total_Big,
+                    Stu_Image_TotalSmall = this.Stu_Image_TotalSmall,
+                    Stu_Images_Degree_Yes_No = this.Stu_ImageDegree_YesNo,
+                    Stu_Image_Degree_Bytes = this.Stu_Image_Degree_Bytes,
+                    Stu_ImageBirth_Cert_YesNo = this.Stu_ImageBirth_Cert_YesNo,
+                    Stu_ImageBirth_Cert_Bytes = this.Stu_ImageBirth_Cert_Bytes,
+                    Stu_ImageIDNation_YesNo = this.Stu_ImageIDNation_YesNo,
+                    Stu_ImageIDNation_Bytes = this.Stu_ImageIDNation_Bytes,
+                    Stu_ImagePoor_Card_YesNo = this.Stu_ImagePoor_Card_YesNo,
+                    Stu_Image_Poor_Card_Bytes = this.Stu_Image_Poor_Card_Bytes,
+                    Stu_Insert_by_ID = this.Stu_Insert_by_ID,
+                    Stu_Insert_DateTime = this.Stu_Insert_DateTime,
+                    Stu_Insert_Info = this.Stu_Insert_Info,
+                    Stu_Update_By_ID = this.Stu_Update_By_ID,
+                    Stu_Update_DateTime = this.Stu_Update_DateTime,
+                    Stu_Update_Info = this.Stu_Update_Info,
+                    Stu_Delete_By_ID = this.Stu_Delete_By_ID,
+                    Stu_Delete_DateTime = this.Stu_Delete_DateTime,
+                    Stu_Delete_Info = this.Stu_Delete_Info,
+
+
+                };
+                bool success = dbConnection.Insert_Student_Information(student_Info);
+
+                if (success)
+                {
+
+                    ErrorMessage = "លេខសម្ភាល់ " + Stu_ID + " បានរក្សាទុកជោគជ័យ !";
+                    ErrorImageSource = new BitmapImage(new Uri("ms-appx:///Assets/icons8-check-96.png"));
+                    MessageColor = new SolidColorBrush(Colors.Green);
+
+                }
+                else
+                {
+                    ErrorMessage = "លេខសម្ភាល់ " + Stu_ID + " រក្សាទុកបរាជ៏យ !";
+                    ErrorImageSource = new BitmapImage(new Uri("ms-appx:///Assets/icons8-fail-96.png"));
+                    MessageColor = new SolidColorBrush(Colors.Red);
+                }
             }
         }
 
@@ -1824,25 +1979,25 @@ namespace RPISVR_Managements.ViewModel
             //Stu_Gender = string.Empty;
             //Stu_StateFamily = string.Empty;
             //Stu_BirthdayDateOnly = null;
-            Stu_EducationLevels = string.Empty;
-            Stu_EducationSubjects = string.Empty;
-            Stu_StudyTimeShift = string.Empty;
+            //Stu_EducationLevels = string.Empty;
+            //Stu_EducationSubjects = string.Empty;
+            //Stu_StudyTimeShift = string.Empty;
             Stu_PhoneNumber = string.Empty;
-            Stu_EducationType = string.Empty;
+            //Stu_EducationType = string.Empty;
             Stu_NationalID = string.Empty;
-            Stu_StudyingTime = string.Empty;
-            Stu_Birth_Province = string.Empty;
-            Stu_Birth_Distric = string.Empty;
-            Stu_Birth_Commune = string.Empty;
-            Stu_Birth_Village = string.Empty;
-            Stu_Live_Pro = string.Empty;
-            Stu_Live_Dis = string.Empty;
-            Stu_Live_Comm = string.Empty;
-            Stu_Live_Vill = string.Empty;
+            //Stu_StudyingTime = string.Empty;
+            //Stu_Birth_Province = string.Empty;
+            //Stu_Birth_Distric = string.Empty;
+            //Stu_Birth_Commune = string.Empty;
+            //Stu_Birth_Village = string.Empty;
+            //Stu_Live_Pro = string.Empty;
+            //Stu_Live_Dis = string.Empty;
+            //Stu_Live_Comm = string.Empty;
+            //Stu_Live_Vill = string.Empty;
             Stu_Jobs = string.Empty;
             Stu_School = string.Empty;
-            Stu_StudyYear = string.Empty;
-            Stu_Semester = string.Empty;
+            //Stu_StudyYear = string.Empty;
+            //Stu_Semester = string.Empty;
             Stu_Mother_Name = string.Empty;
             Stu_Mother_Phone = string.Empty;
             Stu_Mother_Job = string.Empty;
@@ -1869,7 +2024,7 @@ namespace RPISVR_Managements.ViewModel
             Stu_Insert_by_ID = string.Empty;
             Stu_Insert_DateTime = this.Stu_Insert_DateTime;
             Stu_Insert_Info = this.Stu_Insert_Info;
-            Stu_Update_By_ID = string.Empty ;
+            //Stu_Update_By_ID = string.Empty ;
             Stu_Update_DateTime = this.Stu_Update_DateTime;
             Stu_Update_Info = this.Stu_Update_Info;
             Stu_Delete_By_ID = string.Empty;
@@ -2166,6 +2321,12 @@ namespace RPISVR_Managements.ViewModel
             
         }
 
+        public async Task ClearAsync()
+        {
+            ClearStudentInfo();
+            IsInsertEnabled = true;
+            IsUpdateEnabled = false;
+        }
         // Example method to display error messages
         private Task ShowErrorMessageAsync(string message)
         {
@@ -2248,14 +2409,208 @@ namespace RPISVR_Managements.ViewModel
         // Updates the SelectedDate property based on the selected day, month, and year
         private void UpdateSelectedDate()
         {
-            if (!string.IsNullOrEmpty(SelectedKhmerMonth) && SelectedDay > 0 && SelectedYear > 0)
+            // Convert the selected Khmer month to a month number
+            int month = KhmerCalendarHelper.GetMonthNumberByKhmerName(SelectedKhmerMonth);
+
+            if (SelectedDay > 0 && month > 0 && SelectedYear > 0)
             {
-                int month = KhmerMonths.IndexOf(SelectedKhmerMonth) + 1; // Convert Khmer month to index
-                SelectedDate = new DateTime(SelectedYear, month, SelectedDay);
+                try
+                {
+                    // Set the SelectedDate property
+                    SelectedDate = new DateTime(SelectedYear, month, SelectedDay);
+                }
+                catch (ArgumentOutOfRangeException)
+                {
+                    // Handle invalid date (like February 30th)
+                    SelectedDate = null;
+                }
             }
         }
+
+        private BitmapImage ConvertBytesToImage(byte[] imageBytes)
+        {
+            if (imageBytes == null || imageBytes.Length == 0)
+            {
+                Console.WriteLine("Image bytes are null or empty");
+                return null;
+            }
+
+            BitmapImage image = new BitmapImage();
+            using (InMemoryRandomAccessStream stream = new InMemoryRandomAccessStream())
+            {
+                using (DataWriter writer = new DataWriter(stream.GetOutputStreamAt(0)))
+                {
+                    writer.WriteBytes(imageBytes);
+                    writer.StoreAsync().GetResults();
+                }
+
+                stream.Seek(0);
+
+                try
+                {
+                    image.SetSource(stream); // Load the image from the stream
+                    Console.WriteLine("Image successfully loaded");
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine("Error setting image source: " + ex.Message);
+                }
+            }
+
+            return image;
+        }
+
+
+
         //End
 
+        private Student_Info _newStudent = new Student_Info();
+        private bool _isEditing = false;
+        private Student_Info _selectedStudent;
+
+
+        //Update
+        private bool _isInsertEnabled = true;
+        public bool IsInsertEnabled
+        {
+            get => _isInsertEnabled;
+            set
+            {
+                _isInsertEnabled = value;
+                OnPropertyChanged(nameof(IsInsertEnabled));
+            }
+        }
+
+        private bool _isUpdateEnabled = false;
+        public bool IsUpdateEnabled
+        {
+            get => _isUpdateEnabled;
+            set
+            {
+                _isUpdateEnabled = value;
+                OnPropertyChanged(nameof(IsUpdateEnabled));
+            }
+        }
+
+        // The selected student in the ListView
+        public Student_Info SelectedStudent
+        {
+            get => _selectedStudent;
+            set
+            {
+                _selectedStudent = value;
+                OnPropertyChanged();
+
+                
+                // When a student is selected, populate the existing properties
+                if (_selectedStudent != null)
+                {
+                    Stu_ID = _selectedStudent.Stu_ID;
+                    Stu_FirstName_KH = _selectedStudent.Stu_FirstName_KH;
+                    Stu_LastName_KH = _selectedStudent.Stu_LastName_KH;
+                    Stu_FirstName_EN = _selectedStudent.Stu_FirstName_EN;
+                    Stu_LastName_EN = _selectedStudent.Stu_LastName_EN;
+                    IsMale = _selectedStudent.Stu_Gender == "ស្រី";
+                    IsSingle = _selectedStudent.Stu_StateFamily == "មានគ្រួសារ";
+                    //Stu_BirthdayDateOnly = _selectedStudent.Stu_BirthdayDateOnly;
+                    Stu_EducationLevels = _selectedStudent.Stu_EducationLevels;
+                    Stu_EducationSubjects = _selectedStudent.Stu_EducationSubjects;
+                    Stu_StudyTimeShift = _selectedStudent.Stu_StudyTimeShift;
+                    Stu_PhoneNumber = _selectedStudent.Stu_PhoneNumber;
+                    Stu_EducationType = _selectedStudent.Stu_EducationType;
+                    Stu_NationalID = _selectedStudent.Stu_NationalID;
+                    Stu_StudyingTime = _selectedStudent.Stu_StudyingTime;
+                    Stu_Birth_Province = _selectedStudent.Stu_Birth_Province;
+                    Stu_Birth_Distric = _selectedStudent.Stu_Birth_Distric;
+                    Stu_Birth_Commune = _selectedStudent.Stu_Birth_Commune;
+                    Stu_Birth_Village = _selectedStudent.Stu_Birth_Village;
+                    Stu_Live_Pro = _selectedStudent.Stu_Live_Pro;
+                    Stu_Live_Dis = _selectedStudent.Stu_Live_Dis;
+                    Stu_Live_Comm = _selectedStudent.Stu_Live_Comm;
+                    Stu_Live_Vill = _selectedStudent.Stu_Live_Vill;
+                    Stu_Jobs = _selectedStudent.Stu_Jobs;
+                    Stu_School = _selectedStudent.Stu_School;
+                    Stu_StudyYear = _selectedStudent.Stu_StudyYear;
+                    Stu_Semester = _selectedStudent.Stu_Semester;
+                    Stu_Mother_Name = _selectedStudent.Stu_Mother_Name;
+                    Stu_Mother_Phone = _selectedStudent.Stu_Mother_Phone;
+                    Stu_Mother_Job = _selectedStudent.Stu_Mother_Job;
+                    Stu_Father_Name = _selectedStudent.Stu_Father_Name;
+                    Stu_Father_Phone = _selectedStudent.Stu_Father_Phone;
+                    Stu_Father_Job = _selectedStudent.Stu_Father_Job;
+                    IsStuImage_Yes = _selectedStudent.Stu_Image_YesNo == "មានរូបថត";
+                    Stu_Image_Source = _selectedStudent.Stu_Image_Source;
+                    ProfileImageBytes = _selectedStudent.ProfileImageBytes;
+                    Stu_Image_Total_Big = _selectedStudent.Stu_Image_Total_Big;
+                    Stu_Image_TotalSmall = _selectedStudent.Stu_Image_TotalSmall;
+                    Is_ImageDegree_YesNo = _selectedStudent.Stu_Images_Degree_Yes_No == "មាន";
+                    Stu_Image_Degree_Source = _selectedStudent.Stu_Image_Degree_Source;
+                    Stu_Image_Degree_Bytes = _selectedStudent.Stu_Image_Degree_Bytes;
+                    Is_ImageBirth_Cert_YesNo = _selectedStudent.Stu_ImageBirth_Cert_YesNo == "មាន";
+                    Stu_ImageBirth_Cert_Source = _selectedStudent.Stu_ImageBirth_Cert_Source;
+                    Stu_ImageBirth_Cert_Bytes = _selectedStudent.Stu_ImageBirth_Cert_Bytes;
+                    Is_Stu_ImageIDNation_YesNo = _selectedStudent.Stu_ImageIDNation_YesNo == "មាន";
+                    Stu_ImageIDNation_Source = _selectedStudent.Stu_ImageIDNation_Source;
+                    Stu_ImageIDNation_Bytes = _selectedStudent.Stu_ImageIDNation_Bytes;
+                    Is_ImagePoor_Card_YesNo = _selectedStudent.Stu_ImagePoor_Card_YesNo == "មាន";
+                    Stu_ImagePoor_Card_Source = _selectedStudent.Stu_ImagePoor_Card_Source;
+                    Stu_Image_Poor_Card_Bytes = _selectedStudent.Stu_Image_Poor_Card_Bytes;
+                    Stu_Update_By_ID = _selectedStudent.Stu_Update_By_ID;
+                    Stu_Update_DateTime = _selectedStudent.Stu_Update_DateTime;
+                    Stu_Update_Info = _selectedStudent.Stu_Update_Info;
+ 
+
+                    if (DateTime.TryParseExact(_selectedStudent.Stu_BirthdayDateOnly, "dd/MM/yyyy", null, System.Globalization.DateTimeStyles.None, out DateTime birthday))
+                    {
+                        // Set individual day, month, and year values
+                        SelectedDay = birthday.Day;
+                        SelectedKhmerMonth = KhmerCalendarHelper.GetKhmerMonthName(birthday.Month);
+                        SelectedYear = birthday.Year;
+                    }
+                    else
+                    {
+                        // Handle parsing error if the string does not match the expected format
+                        Debug.WriteLine("Invalid date format for Stu_BirthdayDateOnly.");
+                    }
+                }
+                OnPropertyChanged(nameof(SelectedStudent));
+                if (_selectedStudent != null)
+                {
+                    // Disable Insert and Enable Update
+                    IsInsertEnabled = false;
+                    IsUpdateEnabled = true;
+                }
+                else
+                {
+                    // Enable Insert and Disable Update
+                    IsInsertEnabled = true;
+                    IsUpdateEnabled = false;
+                }
+            }
+        }
+
+        // Method to set the Khmer date picker values from DateTime
+        public void SetKhmerDateFromDateTime(DateTime date)
+        {
+            SelectedDay = date.Day; // Set the day
+
+            // Set the Khmer month (convert month number to Khmer month name)
+            SelectedKhmerMonth = KhmerCalendarHelper.GetKhmerMonthName(date.Month);
+
+            // Set the year
+            SelectedYear = date.Year;
+        }
+
+        
+        // This is used to determine if the student can be edited (after clicking "Edit")
+        public bool CanEditStudent => SelectedStudent != null;
+        private bool CanUpdateStudent()
+        {
+            return SelectedStudent != null;
+        }
+
+
+        
         
         public event PropertyChangedEventHandler PropertyChanged;
         protected void OnPropertyChanged([CallerMemberName] string name = null)

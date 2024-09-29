@@ -42,16 +42,19 @@
                                PlaceholderText="បញ្ចូល (ត្រកូល)" 
                                RelativePanel.Below="Stu_ID" 
                                Style="{StaticResource Style_KH_TextBox}"
-                               Text="{Binding Stu_FirstName_KH,Mode=TwoWay}"
-                               BorderBrush="{Binding Stu_FirstName_KH_BorderBrush}" />
+                               Text="{Binding Stu_FirstName_KH, Mode=TwoWay}"
+                               BorderBrush="{Binding Stu_FirstName_KH_BorderBrush}"/>
+                        
+                            
 
                         <TextBox x:Name="Stu_LastName_KH" 
                                Header="នាម" 
                                PlaceholderText="បញ្ចូល (ឈ្មោះ)" 
                                RelativePanel.Below="Stu_FirstName_KH" 
                                Style="{StaticResource Style_KH_TextBox}"
-                               Text="{Binding Stu_LastName_KH, Mode=TwoWay}"
+                                Text="{Binding Stu_LastName_KH, Mode=TwoWay}"
                                BorderBrush="{Binding Stu_LastName_KH_BorderBrush}"/>
+                       
 
                         <TextBox x:Name="Stu_FirstName_EN" 
                                  Text="{Binding Stu_FirstName_EN, Mode=TwoWay}"
@@ -75,7 +78,7 @@
                                     OnContent="ស្រី" 
                                     OffContent="ប្រុស"
                                     RelativePanel.Below="Stu_StateFamily"
-                                    RelativePanel.RightOf="Stu_Levels"                                   
+                                    RelativePanel.RightOf="Stu_EducationLevels"                                   
                                     Style="{StaticResource Stye_KH_ToggleSwitch}"
                                     Margin="5,5,5,0"
                                     IsOn="{Binding IsMale, Mode=TwoWay}"/>
@@ -92,7 +95,7 @@
                             <RelativePanel>
                                 <TextBlock x:Name="Text_BT" Text="ថ្ងៃខែឆ្នាំកំណើត" Style="{StaticResource Style_KH_TextBox}"/>
 
-                                <!-- Day ComboBox -->
+                                 <!--Day ComboBox--> 
                                 <ComboBox x:Name="DayPicker"
                                             RelativePanel.Below="Text_BT"  
                                             Style="{StaticResource Stye_KH_Combobox}"
@@ -101,7 +104,7 @@
                                             Width="100"                      
                                             Margin="5,10,0,0" />
 
-                                <!-- Khmer Month ComboBox -->
+                                 <!--Khmer Month ComboBox--> 
                                 <ComboBox x:Name="KhmerMonthPicker"
                                           RelativePanel.RightOf="DayPicker"
                                           RelativePanel.Below="Text_BT" 
@@ -111,7 +114,7 @@
                                           Width="100"
                                           Margin="0,10,0,0" />
 
-                                <!-- Year ComboBox -->
+                                 <!--Year ComboBox--> 
                                 <ComboBox x:Name="YearPicker"
                                           RelativePanel.RightOf="KhmerMonthPicker"
                                           RelativePanel.Below="Text_BT" 
@@ -134,7 +137,7 @@
                                     Margin="5,15,5,0"
                                     IsOn="{Binding IsSingle,Mode=TwoWay}"/>
 
-                        <ComboBox x:Name="Stu_Levels"
+                        <ComboBox x:Name="Stu_EducationLevels"
                                 Header="កម្រិតសិក្សា"
                                 RelativePanel.Below="Stu_LastName_EN"
                                 RelativePanel.RightOf="Stu_LastName_KH"
@@ -680,9 +683,9 @@
                             Margin="10,5,10,0" 
                             />
             </StackPanel>
-             
-            
-            <Button x:Name="ISI_Add" Style="{StaticResource Stye_KH_Button}" Click="ISI_Click_Add_Student_Info" Command="{Binding SubmitCommand}">
+
+
+            <Button x:Name="ISI_Add" Style="{StaticResource Stye_KH_Button}" Click="ISI_Click_Add_Student_Info" Command="{Binding SubmitCommand}" IsEnabled="{Binding IsInsertEnabled}">
                 <Button.Resources>
                     <SolidColorBrush x:Key="ButtonBackgroundPointerOver" Color="#605EFF" />
                 </Button.Resources>
@@ -691,7 +694,7 @@
                     <TextBlock Text="បញ្ចូល" Margin="30,0,0,0"/>
                 </StackPanel>
             </Button>
-            <Button x:Name="ISI_Update" Style="{StaticResource Stye_KH_Button}" Click="Test_DialogFont">
+            <Button x:Name="ISI_Update" Command="{Binding SubmitCommand}" IsEnabled="{Binding IsUpdateEnabled}" Style="{StaticResource Stye_KH_Button}" Click="Test_DialogFont">
                 <Button.Resources>
                     <SolidColorBrush x:Key="ButtonBackgroundPointerOver" Color="#605EFF" />
                 </Button.Resources>
@@ -700,13 +703,13 @@
                     <TextBlock Text="ធ្វើបច្ចុប្បន្នភាព" Margin="2,0,0,0"/>
                 </StackPanel>
             </Button>
-            <Button x:Name="ISI_Delete" Style="{StaticResource Stye_KH_Button}" Click="Test_Delete">
+            <Button x:Name="ISI_Delete" Command="{Binding ClearCommand}"  Style="{StaticResource Stye_KH_Button}" >
                 <Button.Resources>
                     <SolidColorBrush x:Key="ButtonBackgroundPointerOver" Color="#605EFF" />
                 </Button.Resources>
                 <StackPanel Orientation="Horizontal">
-                    <Image Source="/Assets/Student_Info_Icon/icons8-delete-48.png" Width="25" Height="25" Margin="0,0,20,0"/>
-                    <TextBlock Text="លុប" Margin="30,0,0,0"/>
+                    <Image Source="/Assets/Student_Info_Icon/icons8-broom-96.png" Width="25" Height="25" Margin="0,0,20,0"/>
+                    <TextBlock Text="សម្អាតទិន្នន័យ" Margin="10,0,0,0"/>
                 </StackPanel>
             </Button>
 
@@ -805,7 +808,7 @@
                             </Expander.Header>
                             <Expander.Content>
                                 <StackPanel>
-                                    <Button x:Name="btn_Edit"  
+                                    <Button x:Name="btn_Edit" 
                                           Style="{StaticResource Stye_KH_Button}">
                                         <Button.Resources>
                                             <SolidColorBrush x:Key="ButtonBackgroundPointerOver" Color="#605EFF" />
@@ -981,11 +984,12 @@
                     <StackPanel>
                         <!--Header-->
                         <StackPanel Orientation="Horizontal" Spacing="10" Background="Green">
-                          
-                            <TextBlock Text="ID" Width="50" Style="{StaticResource Font_KH_Body}" FontWeight="Bold" Visibility="Collapsed"/>
-                            <TextBlock Text="លេខសម្គាល់" Width="80" Margin="15,0,0,0" Style="{StaticResource Font_KH_Body}" FontWeight="Bold"/>
-                            <TextBlock Text="គោត្តនាម" Width="50" Style="{StaticResource Font_KH_Body}" FontWeight="Bold"/>
-                            <TextBlock Text="នាម" Width="40" Style="{StaticResource Font_KH_Body}" FontWeight="Bold"/>
+
+                            <TextBlock Text="ID" Width="50"  Style="{StaticResource Font_KH_Body}" FontWeight="Bold" Visibility="Collapsed"/>
+                            <TextBlock Text="រូបភាព" Width="60" Margin="40,0,0,0" Style="{StaticResource Font_KH_Body}" FontWeight="Bold"/>
+                            <TextBlock Text="លេខសម្គាល់" Width="80"  Style="{StaticResource Font_KH_Body}" FontWeight="Bold"/>
+                            <TextBlock Text="គោត្តនាម" Width="70" Style="{StaticResource Font_KH_Body}" FontWeight="Bold"/>
+                            <TextBlock Text="នាម" Width="70" Style="{StaticResource Font_KH_Body}" FontWeight="Bold"/>
                             <TextBlock Text="ត្រកូល(ឡាតាំង)" Width="100" Style="{StaticResource Font_KH_Body}" FontWeight="Bold"/>
                             <TextBlock Text="ឈ្មោះ(ឡាតាំង)" Width="100" Style="{StaticResource Font_KH_Body}" FontWeight="Bold"/>
                             <TextBlock Text="ភេទ" Width="40" Style="{StaticResource Font_KH_Body}" FontWeight="Bold"/>
@@ -1032,15 +1036,15 @@
                             <TextBlock Text="អ្នកធ្វើបច្ចុប្បន្នភាពចុងក្រោយ" Width="160" Style="{StaticResource Font_KH_Body}" FontWeight="Bold"/>
                             <TextBlock Text="កាលបរិច្ឆេទធ្វើបច្ចុប្បន្នភាពចុងក្រោយ" Width="200" Style="{StaticResource Font_KH_Body}" FontWeight="Bold"/>
                         </StackPanel>
-                        <ListView ItemsSource="{Binding Students}" ScrollViewer.HorizontalScrollMode="Disabled" ScrollViewer.HorizontalScrollBarVisibility="Hidden" BorderBrush="Red" BorderThickness="3">
+                        <ListView ItemsSource="{Binding Students}" SelectedItem="{Binding SelectedStudent,Mode=TwoWay}" ScrollViewer.HorizontalScrollMode="Disabled" ScrollViewer.HorizontalScrollBarVisibility="Hidden" BorderBrush="Red" BorderThickness="3">
                             <ListView.ItemTemplate>
                                 <DataTemplate>
-                                    <StackPanel Orientation="Horizontal" Spacing="10">
-                                        <!--<Image Source="{Binding ProfileImage}" Width="50" Height="50"/>-->
+                                    <StackPanel Orientation="Horizontal" Spacing="10" Margin="5">
+                                        <Image Source="{Binding Stu_Image_Source}" Width="70" Height="50"/>
                                         <TextBlock Text="{Binding ID}" Width="30" Visibility="Collapsed"/>
                                         <TextBlock Text="{Binding Stu_ID}" Width="100"/>
-                                        <TextBlock Text="{Binding Stu_FirstName_KH}" Width="20" Style="{StaticResource Font_KH_Body}"/>
-                                        <TextBlock Text="{Binding Stu_LastName_KH}" Width="70" Style="{StaticResource Font_KH_Body}"/>
+                                        <TextBlock Text="{Binding Stu_FirstName_KH}" Width="50" Style="{StaticResource Font_KH_Body}"/>
+                                        <TextBlock Text="{Binding Stu_LastName_KH}" Width="90" Style="{StaticResource Font_KH_Body}"/>
                                         <TextBlock Text="{Binding Stu_FirstName_EN}" Width="90"/>
                                         <TextBlock Text="{Binding Stu_LastName_EN}" Width="90"/>
                                         <TextBlock Text="{Binding Stu_Gender}" Width="50" Style="{StaticResource Font_KH_Body}"/>
